@@ -29,7 +29,7 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -43,7 +43,7 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -66,7 +66,7 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
@@ -96,40 +96,65 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
 
-        public HttpResponseMessage RatePost(int postId, int score, String cnic)
+        public HttpResponseMessage ReportPost(String cnic, int postId, String reportType, String reportReason)
         {
             try
             {
-                Rate r = db.Rates.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
-                if (r != null)
+                var report = db.Reports.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
+                if (report != null)
                 {
-                    r.rate_score = score;
-                    r.rate_date = DateTime.Now;
-                    r.Post_id = postId;
+                    report.report_reason = reportReason;
+                    report.report_type = reportType;
                 }
                 else
                 {
-                    r = new Rate();
-                    r.rate_score = score;
-                    r.rate_date = DateTime.Now;
-                    r.Post_id = postId;
-                    r.User_cnic = cnic;
-                    db.Rates.Add(r);
+                    report = new Report();
+                    report.report_date = DateTime.Now;
+                    report.report_status = "pending";
+                    report.report_type = reportType;
+                    report.report_reason = reportReason;
+                    report.Post_id = postId;
+                    report.User_cnic = cnic;
                 }
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Rate Successful");
+                return Request.CreateResponse(HttpStatusCode.OK, "Post Report Successful");
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
-
-
+        public HttpResponseMessage ReportComment(String cnic, int commentId, int postId, String reportType, String reportReason)
+        {
+            try
+            {
+                var report = db.Reports.Where((i) => i.Comment_id == commentId && i.User_cnic == cnic).FirstOrDefault();
+                if (report != null)
+                {
+                    report.report_reason = reportReason;
+                    report.report_type = reportType;
+                }
+                else
+                {
+                    report = new Report();
+                    report.report_date = DateTime.Now;
+                    report.report_status = "pending";
+                    report.report_type = reportType;
+                    report.report_reason = reportReason;
+                    report.Post_id = postId;
+                    report.User_cnic = cnic;
+                }
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Comment Report Successful");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }
