@@ -1,0 +1,1227 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="comment_date" Type="datetime" Nullable="false" />
+          <Property Name="comment_text" Type="text" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Post_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Follow">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Follower_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Journalist">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="reference" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="experience" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Like">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Paty_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Paty">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="party_name" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="party_flag" Type="text" Nullable="false" />
+          <Property Name="party_symbol" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Politician_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Politician">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="politicain_position" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="politician_type" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="post_date" Type="datetime" />
+          <Property Name="post_text" Type="text" />
+          <Property Name="post_image" Type="text" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="post_uc" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Rate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="rate_score" Type="int" Nullable="false" />
+          <Property Name="rate_date" Type="datetime" Nullable="false" />
+          <Property Name="Post_id" Type="int" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="report_date" Type="datetime" Nullable="false" />
+          <Property Name="report_status" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="report_type" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="report_reason" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Post_id" Type="int" Nullable="false" />
+          <Property Name="Comment_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UpgradeRequset">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="request_type" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="request_status" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="request_document" Type="text" Nullable="false" />
+          <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="cnic" />
+          </Key>
+          <Property Name="cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="full_name" Type="varchar" MaxLength="255" />
+          <Property Name="password" Type="varchar" MaxLength="255" />
+          <Property Name="user_province" Type="varchar" MaxLength="255" />
+          <Property Name="user_distinct" Type="varchar" MaxLength="255" />
+          <Property Name="user_tehsil" Type="varchar" MaxLength="255" />
+          <Property Name="user_uc" Type="varchar" MaxLength="255" />
+          <Property Name="user_phone" Type="varchar" MaxLength="255" />
+          <Property Name="user_pic" Type="text" />
+          <Property Name="user_gender" Type="varchar" MaxLength="255" />
+          <Property Name="created_date" Type="datetime" />
+          <Property Name="isDeleted" Type="tinyint" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'V1.dbo.AllComments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllComments">
+          <Key>
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="comment_id" />
+            <PropertyRef Name="comment_text" />
+            <PropertyRef Name="comment_date" />
+            <PropertyRef Name="post_id" />
+          </Key>
+          <Property Name="user_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="255" />
+          <Property Name="user_picture" Type="text" />
+          <Property Name="comment_id" Type="int" Nullable="false" />
+          <Property Name="comment_text" Type="text" Nullable="false" />
+          <Property Name="comment_date" Type="datetime" Nullable="false" />
+          <Property Name="post_id" Type="int" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllPost">
+          <Key>
+            <PropertyRef Name="post_id" />
+            <PropertyRef Name="post_uc" />
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="account_type" />
+            <PropertyRef Name="total_rating" />
+          </Key>
+          <Property Name="post_id" Type="int" Nullable="false" />
+          <Property Name="post_date" Type="datetime" />
+          <Property Name="post_text" Type="text" />
+          <Property Name="post_image" Type="text" />
+          <Property Name="post_uc" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="255" />
+          <Property Name="user_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_picture" Type="text" />
+          <Property Name="account_type" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="position" Type="varchar" MaxLength="255" />
+          <Property Name="total_rating" Type="int" Nullable="false" />
+          <Property Name="recent_comment" Type="text" />
+          <Property Name="recent_comment_date" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="UserInfo">
+          <Key>
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="user_type" />
+            <PropertyRef Name="is_follow" />
+          </Key>
+          <Property Name="user_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="255" />
+          <Property Name="user_picture" Type="text" />
+          <Property Name="user_type" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="user_total_post" Type="int" />
+          <Property Name="user_position" Type="varchar" MaxLength="255" />
+          <Property Name="user_total_followed" Type="int" />
+          <Property Name="user_total_following" Type="int" />
+          <Property Name="user_province" Type="varchar" MaxLength="255" />
+          <Property Name="user_distinct" Type="varchar" MaxLength="255" />
+          <Property Name="user_tehsil" Type="varchar" MaxLength="255" />
+          <Property Name="user_uc" Type="varchar" MaxLength="255" />
+          <Property Name="user_phone" Type="varchar" MaxLength="255" />
+          <Property Name="user_gender" Type="varchar" MaxLength="255" />
+          <Property Name="created_date" Type="datetime" />
+          <Property Name="is_follow" Type="varchar" MaxLength="5" Nullable="false" />
+        </EntityType>
+        <Association Name="Admin_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Admin" Type="Self.Admin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Admin">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Comment_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Comment_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Follow_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Follow" Type="Self.Follow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Follow">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Journalist_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Journalist" Type="Self.Journalist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Journalist">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Like_Paty">
+          <End Role="Paty" Type="Self.Paty" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paty">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="Paty_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Like_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Paty_Politician">
+          <End Role="Politician" Type="Self.Politician" Multiplicity="1" />
+          <End Role="Paty" Type="Self.Paty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Politician">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Paty">
+              <PropertyRef Name="Politician_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Politician_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Politician" Type="Self.Politician" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Politician">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Post_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Rate_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Rate" Type="Self.Rate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Rate">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Rate_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Rate" Type="Self.Rate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Rate">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_Comment">
+          <End Role="Comment" Type="Self.Comment" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="Comment_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UpgradeRequset_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UpgradeRequset" Type="Self.UpgradeRequset" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="UpgradeRequset">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="V1ModelStoreContainer">
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Comment" EntityType="Self.Comment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Follow" EntityType="Self.Follow" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Journalist" EntityType="Self.Journalist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Like" EntityType="Self.Like" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Paty" EntityType="Self.Paty" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Politician" EntityType="Self.Politician" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Rate" EntityType="Self.Rate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UpgradeRequset" EntityType="Self.UpgradeRequset" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AllComments" EntityType="Self.AllComments" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AllComments].[user_cnic] AS [user_cnic], 
+    [AllComments].[user_name] AS [user_name], 
+    [AllComments].[user_picture] AS [user_picture], 
+    [AllComments].[comment_id] AS [comment_id], 
+    [AllComments].[comment_text] AS [comment_text], 
+    [AllComments].[comment_date] AS [comment_date], 
+    [AllComments].[post_id] AS [post_id]
+    FROM [dbo].[AllComments] AS [AllComments]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AllPost" EntityType="Self.AllPost" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AllPost].[post_id] AS [post_id], 
+    [AllPost].[post_date] AS [post_date], 
+    [AllPost].[post_text] AS [post_text], 
+    [AllPost].[post_image] AS [post_image], 
+    [AllPost].[post_uc] AS [post_uc], 
+    [AllPost].[user_name] AS [user_name], 
+    [AllPost].[user_cnic] AS [user_cnic], 
+    [AllPost].[user_picture] AS [user_picture], 
+    [AllPost].[account_type] AS [account_type], 
+    [AllPost].[position] AS [position], 
+    [AllPost].[total_rating] AS [total_rating], 
+    [AllPost].[recent_comment] AS [recent_comment], 
+    [AllPost].[recent_comment_date] AS [recent_comment_date]
+    FROM [dbo].[AllPost] AS [AllPost]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="UserInfo" EntityType="Self.UserInfo" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [UserInfo].[user_cnic] AS [user_cnic], 
+    [UserInfo].[user_name] AS [user_name], 
+    [UserInfo].[user_picture] AS [user_picture], 
+    [UserInfo].[user_type] AS [user_type], 
+    [UserInfo].[user_total_post] AS [user_total_post], 
+    [UserInfo].[user_position] AS [user_position], 
+    [UserInfo].[user_total_followed] AS [user_total_followed], 
+    [UserInfo].[user_total_following] AS [user_total_following], 
+    [UserInfo].[user_province] AS [user_province], 
+    [UserInfo].[user_distinct] AS [user_distinct], 
+    [UserInfo].[user_tehsil] AS [user_tehsil], 
+    [UserInfo].[user_uc] AS [user_uc], 
+    [UserInfo].[user_phone] AS [user_phone], 
+    [UserInfo].[user_gender] AS [user_gender], 
+    [UserInfo].[created_date] AS [created_date], 
+    [UserInfo].[is_follow] AS [is_follow]
+    FROM [dbo].[UserInfo] AS [UserInfo]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="Admin_User" Association="Self.Admin_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Admin" EntitySet="Admin" />
+          </AssociationSet>
+          <AssociationSet Name="Comment_Post" Association="Self.Comment_Post">
+            <End Role="Post" EntitySet="Post" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="Comment_User" Association="Self.Comment_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Comment" EntitySet="Comment" />
+          </AssociationSet>
+          <AssociationSet Name="Follow_User" Association="Self.Follow_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Follow" EntitySet="Follow" />
+          </AssociationSet>
+          <AssociationSet Name="Journalist_User" Association="Self.Journalist_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Journalist" EntitySet="Journalist" />
+          </AssociationSet>
+          <AssociationSet Name="Like_Paty" Association="Self.Like_Paty">
+            <End Role="Paty" EntitySet="Paty" />
+            <End Role="Like" EntitySet="Like" />
+          </AssociationSet>
+          <AssociationSet Name="Like_User" Association="Self.Like_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Like" EntitySet="Like" />
+          </AssociationSet>
+          <AssociationSet Name="Paty_Politician" Association="Self.Paty_Politician">
+            <End Role="Politician" EntitySet="Politician" />
+            <End Role="Paty" EntitySet="Paty" />
+          </AssociationSet>
+          <AssociationSet Name="Politician_User" Association="Self.Politician_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Politician" EntitySet="Politician" />
+          </AssociationSet>
+          <AssociationSet Name="Post_User" Association="Self.Post_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Post" EntitySet="Post" />
+          </AssociationSet>
+          <AssociationSet Name="Rate_Post" Association="Self.Rate_Post">
+            <End Role="Post" EntitySet="Post" />
+            <End Role="Rate" EntitySet="Rate" />
+          </AssociationSet>
+          <AssociationSet Name="Rate_User" Association="Self.Rate_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Rate" EntitySet="Rate" />
+          </AssociationSet>
+          <AssociationSet Name="Report_Comment" Association="Self.Report_Comment">
+            <End Role="Comment" EntitySet="Comment" />
+            <End Role="Report" EntitySet="Report" />
+          </AssociationSet>
+          <AssociationSet Name="Report_Post" Association="Self.Report_Post">
+            <End Role="Post" EntitySet="Post" />
+            <End Role="Report" EntitySet="Report" />
+          </AssociationSet>
+          <AssociationSet Name="Report_User" Association="Self.Report_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="Report" EntitySet="Report" />
+          </AssociationSet>
+          <AssociationSet Name="UpgradeRequset_User" Association="Self.UpgradeRequset_User">
+            <End Role="User" EntitySet="User" />
+            <End Role="UpgradeRequset" EntitySet="UpgradeRequset" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="V1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.Admin_User" FromRole="Admin" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Comment">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="comment_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="comment_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Post_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="Self.Comment_Post" FromRole="Comment" ToRole="Post" />
+          <NavigationProperty Name="User" Relationship="Self.Comment_User" FromRole="Comment" ToRole="User" />
+          <NavigationProperty Name="Reports" Relationship="Self.Report_Comment" FromRole="Comment" ToRole="Report" />
+        </EntityType>
+        <EntityType Name="Follow">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Follower_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.Follow_User" FromRole="Follow" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Journalist">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="reference" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="experience" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.Journalist_User" FromRole="Journalist" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Like">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Paty_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Paty" Relationship="Self.Like_Paty" FromRole="Like" ToRole="Paty" />
+          <NavigationProperty Name="User" Relationship="Self.Like_User" FromRole="Like" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Paty">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="party_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="party_flag" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="party_symbol" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Politician_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Likes" Relationship="Self.Like_Paty" FromRole="Paty" ToRole="Like" />
+          <NavigationProperty Name="Politician" Relationship="Self.Paty_Politician" FromRole="Paty" ToRole="Politician" />
+        </EntityType>
+        <EntityType Name="Politician">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="politicain_position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="politician_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Paties" Relationship="Self.Paty_Politician" FromRole="Politician" ToRole="Paty" />
+          <NavigationProperty Name="User" Relationship="Self.Politician_User" FromRole="Politician" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Post">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="post_date" Type="DateTime" Precision="3" />
+          <Property Name="post_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="post_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="post_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Comments" Relationship="Self.Comment_Post" FromRole="Post" ToRole="Comment" />
+          <NavigationProperty Name="User" Relationship="Self.Post_User" FromRole="Post" ToRole="User" />
+          <NavigationProperty Name="Rates" Relationship="Self.Rate_Post" FromRole="Post" ToRole="Rate" />
+          <NavigationProperty Name="Reports" Relationship="Self.Report_Post" FromRole="Post" ToRole="Report" />
+        </EntityType>
+        <EntityType Name="Rate">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="rate_score" Type="Int32" Nullable="false" />
+          <Property Name="rate_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Post_id" Type="Int32" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="Post" Relationship="Self.Rate_Post" FromRole="Rate" ToRole="Post" />
+          <NavigationProperty Name="User" Relationship="Self.Rate_User" FromRole="Rate" ToRole="User" />
+        </EntityType>
+        <EntityType Name="Report">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="report_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="report_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="report_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="report_reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Post_id" Type="Int32" Nullable="false" />
+          <Property Name="Comment_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Comment" Relationship="Self.Report_Comment" FromRole="Report" ToRole="Comment" />
+          <NavigationProperty Name="Post" Relationship="Self.Report_Post" FromRole="Report" ToRole="Post" />
+          <NavigationProperty Name="User" Relationship="Self.Report_User" FromRole="Report" ToRole="User" />
+        </EntityType>
+        <EntityType Name="UpgradeRequset">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="request_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="request_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="request_document" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="Self.UpgradeRequset_User" FromRole="UpgradeRequset" ToRole="User" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="cnic" />
+          </Key>
+          <Property Name="cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="full_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_province" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_distinct" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_tehsil" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_pic" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="user_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="created_date" Type="DateTime" Precision="3" />
+          <Property Name="isDeleted" Type="Byte" />
+          <NavigationProperty Name="Admins" Relationship="Self.Admin_User" FromRole="User" ToRole="Admin" />
+          <NavigationProperty Name="Comments" Relationship="Self.Comment_User" FromRole="User" ToRole="Comment" />
+          <NavigationProperty Name="Follows" Relationship="Self.Follow_User" FromRole="User" ToRole="Follow" />
+          <NavigationProperty Name="Journalists" Relationship="Self.Journalist_User" FromRole="User" ToRole="Journalist" />
+          <NavigationProperty Name="Likes" Relationship="Self.Like_User" FromRole="User" ToRole="Like" />
+          <NavigationProperty Name="Politicians" Relationship="Self.Politician_User" FromRole="User" ToRole="Politician" />
+          <NavigationProperty Name="Posts" Relationship="Self.Post_User" FromRole="User" ToRole="Post" />
+          <NavigationProperty Name="Rates" Relationship="Self.Rate_User" FromRole="User" ToRole="Rate" />
+          <NavigationProperty Name="Reports" Relationship="Self.Report_User" FromRole="User" ToRole="Report" />
+          <NavigationProperty Name="UpgradeRequsets" Relationship="Self.UpgradeRequset_User" FromRole="User" ToRole="UpgradeRequset" />
+        </EntityType>
+        <EntityType Name="AllComment">
+          <Key>
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="comment_id" />
+            <PropertyRef Name="comment_text" />
+            <PropertyRef Name="comment_date" />
+            <PropertyRef Name="post_id" />
+          </Key>
+          <Property Name="user_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="comment_id" Type="Int32" Nullable="false" />
+          <Property Name="comment_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="comment_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="post_id" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AllPost">
+          <Key>
+            <PropertyRef Name="post_id" />
+            <PropertyRef Name="post_uc" />
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="account_type" />
+            <PropertyRef Name="total_rating" />
+          </Key>
+          <Property Name="post_id" Type="Int32" Nullable="false" />
+          <Property Name="post_date" Type="DateTime" Precision="3" />
+          <Property Name="post_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="post_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="post_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="account_type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="total_rating" Type="Int32" Nullable="false" />
+          <Property Name="recent_comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="recent_comment_date" Type="DateTime" Precision="3" />
+        </EntityType>
+        <Association Name="Admin_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Admin" Type="Self.Admin" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Admin">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Comment_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Comment_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Comment">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_Comment">
+          <End Role="Comment" Type="Self.Comment" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Comment">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="Comment_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Follow_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Follow" Type="Self.Follow" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Follow">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Journalist_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Journalist" Type="Self.Journalist" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Journalist">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Like_Paty">
+          <End Role="Paty" Type="Self.Paty" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Paty">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="Paty_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Like_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Like" Type="Self.Like" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Like">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Paty_Politician">
+          <End Role="Politician" Type="Self.Politician" Multiplicity="1" />
+          <End Role="Paty" Type="Self.Paty" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Politician">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Paty">
+              <PropertyRef Name="Politician_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Politician_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Politician" Type="Self.Politician" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Politician">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Post_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Post" Type="Self.Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Rate_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Rate" Type="Self.Rate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Rate">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_Post">
+          <End Role="Post" Type="Self.Post" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Post">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="Post_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Rate_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Rate" Type="Self.Rate" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Rate">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="Report_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="Report" Type="Self.Report" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="Report">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="UpgradeRequset_User">
+          <End Role="User" Type="Self.User" Multiplicity="1" />
+          <End Role="UpgradeRequset" Type="Self.UpgradeRequset" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="cnic" />
+            </Principal>
+            <Dependent Role="UpgradeRequset">
+              <PropertyRef Name="User_cnic" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="V1Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Comments" EntityType="Self.Comment" />
+          <EntitySet Name="Follows" EntityType="Self.Follow" />
+          <EntitySet Name="Journalists" EntityType="Self.Journalist" />
+          <EntitySet Name="Likes" EntityType="Self.Like" />
+          <EntitySet Name="Paties" EntityType="Self.Paty" />
+          <EntitySet Name="Politicians" EntityType="Self.Politician" />
+          <EntitySet Name="Posts" EntityType="Self.Post" />
+          <EntitySet Name="Rates" EntityType="Self.Rate" />
+          <EntitySet Name="Reports" EntityType="Self.Report" />
+          <EntitySet Name="UpgradeRequsets" EntityType="Self.UpgradeRequset" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="AllComments" EntityType="Self.AllComment" />
+          <EntitySet Name="AllPosts" EntityType="Self.AllPost" />
+          <AssociationSet Name="Admin_User" Association="Self.Admin_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Admin" EntitySet="Admins" />
+          </AssociationSet>
+          <AssociationSet Name="Comment_Post" Association="Self.Comment_Post">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="Comment_User" Association="Self.Comment_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Comment" EntitySet="Comments" />
+          </AssociationSet>
+          <AssociationSet Name="Report_Comment" Association="Self.Report_Comment">
+            <End Role="Comment" EntitySet="Comments" />
+            <End Role="Report" EntitySet="Reports" />
+          </AssociationSet>
+          <AssociationSet Name="Follow_User" Association="Self.Follow_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Follow" EntitySet="Follows" />
+          </AssociationSet>
+          <AssociationSet Name="Journalist_User" Association="Self.Journalist_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Journalist" EntitySet="Journalists" />
+          </AssociationSet>
+          <AssociationSet Name="Like_Paty" Association="Self.Like_Paty">
+            <End Role="Paty" EntitySet="Paties" />
+            <End Role="Like" EntitySet="Likes" />
+          </AssociationSet>
+          <AssociationSet Name="Like_User" Association="Self.Like_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Like" EntitySet="Likes" />
+          </AssociationSet>
+          <AssociationSet Name="Paty_Politician" Association="Self.Paty_Politician">
+            <End Role="Politician" EntitySet="Politicians" />
+            <End Role="Paty" EntitySet="Paties" />
+          </AssociationSet>
+          <AssociationSet Name="Politician_User" Association="Self.Politician_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Politician" EntitySet="Politicians" />
+          </AssociationSet>
+          <AssociationSet Name="Post_User" Association="Self.Post_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="Rate_Post" Association="Self.Rate_Post">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Rate" EntitySet="Rates" />
+          </AssociationSet>
+          <AssociationSet Name="Report_Post" Association="Self.Report_Post">
+            <End Role="Post" EntitySet="Posts" />
+            <End Role="Report" EntitySet="Reports" />
+          </AssociationSet>
+          <AssociationSet Name="Rate_User" Association="Self.Rate_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Rate" EntitySet="Rates" />
+          </AssociationSet>
+          <AssociationSet Name="Report_User" Association="Self.Report_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Report" EntitySet="Reports" />
+          </AssociationSet>
+          <AssociationSet Name="UpgradeRequset_User" Association="Self.UpgradeRequset_User">
+            <End Role="User" EntitySet="Users" />
+            <End Role="UpgradeRequset" EntitySet="UpgradeRequsets" />
+          </AssociationSet>
+          <EntitySet Name="UserInfoes" EntityType="V1Model.UserInfo" />
+        </EntityContainer>
+        <EntityType Name="UserInfo">
+          <Key>
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="user_type" />
+            <PropertyRef Name="is_follow" />
+          </Key>
+          <Property Name="user_cnic" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="user_type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="user_total_post" Type="Int32" />
+          <Property Name="user_position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_total_followed" Type="Int32" />
+          <Property Name="user_total_following" Type="Int32" />
+          <Property Name="user_province" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_distinct" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_tehsil" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="created_date" Type="DateTime" Precision="3" />
+          <Property Name="is_follow" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="V1ModelStoreContainer" CdmEntityContainer="V1Entities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="V1Model.Admin">
+              <MappingFragment StoreEntitySet="Admin">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Comments">
+            <EntityTypeMapping TypeName="V1Model.Comment">
+              <MappingFragment StoreEntitySet="Comment">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="comment_date" ColumnName="comment_date" />
+                <ScalarProperty Name="comment_text" ColumnName="comment_text" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="Post_id" ColumnName="Post_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Follows">
+            <EntityTypeMapping TypeName="V1Model.Follow">
+              <MappingFragment StoreEntitySet="Follow">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="Follower_cnic" ColumnName="Follower_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Journalists">
+            <EntityTypeMapping TypeName="V1Model.Journalist">
+              <MappingFragment StoreEntitySet="Journalist">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="reference" ColumnName="reference" />
+                <ScalarProperty Name="experience" ColumnName="experience" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Likes">
+            <EntityTypeMapping TypeName="V1Model.Like">
+              <MappingFragment StoreEntitySet="Like">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="Paty_id" ColumnName="Paty_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Paties">
+            <EntityTypeMapping TypeName="V1Model.Paty">
+              <MappingFragment StoreEntitySet="Paty">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="party_name" ColumnName="party_name" />
+                <ScalarProperty Name="party_flag" ColumnName="party_flag" />
+                <ScalarProperty Name="party_symbol" ColumnName="party_symbol" />
+                <ScalarProperty Name="Politician_id" ColumnName="Politician_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Politicians">
+            <EntityTypeMapping TypeName="V1Model.Politician">
+              <MappingFragment StoreEntitySet="Politician">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="politicain_position" ColumnName="politicain_position" />
+                <ScalarProperty Name="politician_type" ColumnName="politician_type" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Posts">
+            <EntityTypeMapping TypeName="V1Model.Post">
+              <MappingFragment StoreEntitySet="Post">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="post_date" ColumnName="post_date" />
+                <ScalarProperty Name="post_text" ColumnName="post_text" />
+                <ScalarProperty Name="post_image" ColumnName="post_image" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="post_uc" ColumnName="post_uc" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Rates">
+            <EntityTypeMapping TypeName="V1Model.Rate">
+              <MappingFragment StoreEntitySet="Rate">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="rate_score" ColumnName="rate_score" />
+                <ScalarProperty Name="rate_date" ColumnName="rate_date" />
+                <ScalarProperty Name="Post_id" ColumnName="Post_id" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Reports">
+            <EntityTypeMapping TypeName="V1Model.Report">
+              <MappingFragment StoreEntitySet="Report">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="report_date" ColumnName="report_date" />
+                <ScalarProperty Name="report_status" ColumnName="report_status" />
+                <ScalarProperty Name="report_type" ColumnName="report_type" />
+                <ScalarProperty Name="report_reason" ColumnName="report_reason" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="Post_id" ColumnName="Post_id" />
+                <ScalarProperty Name="Comment_id" ColumnName="Comment_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UpgradeRequsets">
+            <EntityTypeMapping TypeName="V1Model.UpgradeRequset">
+              <MappingFragment StoreEntitySet="UpgradeRequset">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="request_type" ColumnName="request_type" />
+                <ScalarProperty Name="request_status" ColumnName="request_status" />
+                <ScalarProperty Name="request_document" ColumnName="request_document" />
+                <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="V1Model.User">
+              <MappingFragment StoreEntitySet="User">
+                <ScalarProperty Name="cnic" ColumnName="cnic" />
+                <ScalarProperty Name="full_name" ColumnName="full_name" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="user_province" ColumnName="user_province" />
+                <ScalarProperty Name="user_distinct" ColumnName="user_distinct" />
+                <ScalarProperty Name="user_tehsil" ColumnName="user_tehsil" />
+                <ScalarProperty Name="user_uc" ColumnName="user_uc" />
+                <ScalarProperty Name="user_phone" ColumnName="user_phone" />
+                <ScalarProperty Name="user_pic" ColumnName="user_pic" />
+                <ScalarProperty Name="user_gender" ColumnName="user_gender" />
+                <ScalarProperty Name="created_date" ColumnName="created_date" />
+                <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AllComments">
+            <EntityTypeMapping TypeName="V1Model.AllComment">
+              <MappingFragment StoreEntitySet="AllComments">
+                <ScalarProperty Name="user_cnic" ColumnName="user_cnic" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_picture" ColumnName="user_picture" />
+                <ScalarProperty Name="comment_id" ColumnName="comment_id" />
+                <ScalarProperty Name="comment_text" ColumnName="comment_text" />
+                <ScalarProperty Name="comment_date" ColumnName="comment_date" />
+                <ScalarProperty Name="post_id" ColumnName="post_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AllPosts">
+            <EntityTypeMapping TypeName="V1Model.AllPost">
+              <MappingFragment StoreEntitySet="AllPost">
+                <ScalarProperty Name="post_id" ColumnName="post_id" />
+                <ScalarProperty Name="post_date" ColumnName="post_date" />
+                <ScalarProperty Name="post_text" ColumnName="post_text" />
+                <ScalarProperty Name="post_image" ColumnName="post_image" />
+                <ScalarProperty Name="post_uc" ColumnName="post_uc" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_cnic" ColumnName="user_cnic" />
+                <ScalarProperty Name="user_picture" ColumnName="user_picture" />
+                <ScalarProperty Name="account_type" ColumnName="account_type" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="total_rating" ColumnName="total_rating" />
+                <ScalarProperty Name="recent_comment" ColumnName="recent_comment" />
+                <ScalarProperty Name="recent_comment_date" ColumnName="recent_comment_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserInfoes">
+            <EntityTypeMapping TypeName="V1Model.UserInfo">
+              <MappingFragment StoreEntitySet="UserInfo">
+                <ScalarProperty Name="is_follow" ColumnName="is_follow" />
+                <ScalarProperty Name="created_date" ColumnName="created_date" />
+                <ScalarProperty Name="user_gender" ColumnName="user_gender" />
+                <ScalarProperty Name="user_phone" ColumnName="user_phone" />
+                <ScalarProperty Name="user_uc" ColumnName="user_uc" />
+                <ScalarProperty Name="user_tehsil" ColumnName="user_tehsil" />
+                <ScalarProperty Name="user_distinct" ColumnName="user_distinct" />
+                <ScalarProperty Name="user_province" ColumnName="user_province" />
+                <ScalarProperty Name="user_total_following" ColumnName="user_total_following" />
+                <ScalarProperty Name="user_total_followed" ColumnName="user_total_followed" />
+                <ScalarProperty Name="user_position" ColumnName="user_position" />
+                <ScalarProperty Name="user_total_post" ColumnName="user_total_post" />
+                <ScalarProperty Name="user_type" ColumnName="user_type" />
+                <ScalarProperty Name="user_picture" ColumnName="user_picture" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_cnic" ColumnName="user_cnic" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

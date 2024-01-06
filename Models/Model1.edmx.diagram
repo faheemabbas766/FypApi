@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="8624b73e342b49fca302df211a5c2dec" Name="Diagram1">
+        <EntityTypeShape EntityType="V1Model.Admin" Width="1.5" PointX="3" PointY="5.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Comment" Width="1.5" PointX="5.25" PointY="15.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Follow" Width="1.5" PointX="3" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Journalist" Width="1.5" PointX="3" PointY="13.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Like" Width="1.5" PointX="7.5" PointY="15.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Paty" Width="1.5" PointX="5.25" PointY="19.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Politician" Width="1.5" PointX="3" PointY="19.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Post" Width="1.5" PointX="3" PointY="22.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Rate" Width="1.5" PointX="8.25" PointY="19" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.Report" Width="1.5" PointX="10.5" PointY="16.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.UpgradeRequset" Width="1.5" PointX="3" PointY="26" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.User" Width="1.5" PointX="0.75" PointY="11.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.AllComment" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.AllPost" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="V1Model.Admin_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Comment_Post" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Comment_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Report_Comment" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Follow_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Journalist_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Like_Paty" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Like_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Paty_Politician" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Politician_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Post_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Rate_Post" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Report_Post" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Rate_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.Report_User" ManuallyRouted="false" />
+        <AssociationConnector Association="V1Model.UpgradeRequset_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="V1Model.UserInfo" Width="1.5" PointX="5.375" PointY="0.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
