@@ -52,7 +52,7 @@ namespace FypApi.Controllers
                 {
                     u.password = password;
                     db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK, u);
+                    return Request.CreateResponse(HttpStatusCode.OK, "Password Change Successful");
                 }
                 else
                 {

@@ -14,19 +14,12 @@ namespace FypApi.Models
     
     public partial class Politician
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Politician()
-        {
-            this.Paties = new HashSet<Paty>();
-        }
-    
         public int id { get; set; }
         public string politicain_position { get; set; }
         public string politician_type { get; set; }
         public string User_cnic { get; set; }
+        public string Party_name { get; set; }
     
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Paty> Paties { get; set; }
         public virtual User User { get; set; }
     }
 }

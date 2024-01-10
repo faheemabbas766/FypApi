@@ -12,22 +12,11 @@ namespace FypApi.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Paty
+    public partial class Party
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Paty()
-        {
-            this.Likes = new HashSet<Like>();
-        }
-    
         public int id { get; set; }
         public string party_name { get; set; }
         public string party_flag { get; set; }
         public string party_symbol { get; set; }
-        public int Politician_id { get; set; }
-    
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Like> Likes { get; set; }
-        public virtual Politician Politician { get; set; }
     }
 }

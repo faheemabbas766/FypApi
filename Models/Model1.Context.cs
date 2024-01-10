@@ -30,7 +30,7 @@ namespace FypApi.Models
         public virtual DbSet<Follow> Follows { get; set; }
         public virtual DbSet<Journalist> Journalists { get; set; }
         public virtual DbSet<Like> Likes { get; set; }
-        public virtual DbSet<Paty> Paties { get; set; }
+        public virtual DbSet<Party> Parties { get; set; }
         public virtual DbSet<Politician> Politicians { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
@@ -39,6 +39,7 @@ namespace FypApi.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AllComment> AllComments { get; set; }
         public virtual DbSet<AllPost> AllPosts { get; set; }
+        public virtual DbSet<AllReport> AllReports { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
     }
 }

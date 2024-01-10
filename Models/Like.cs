@@ -18,7 +18,6 @@ namespace FypApi.Models
         public string User_cnic { get; set; }
         public int Paty_id { get; set; }
     
-        public virtual Paty Paty { get; set; }
         public virtual User User { get; set; }
     }
 }

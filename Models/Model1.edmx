@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="id" />
@@ -48,15 +48,14 @@
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Paty_id" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="Paty">
+        <EntityType Name="Party">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="party_name" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="party_name" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="party_flag" Type="text" Nullable="false" />
           <Property Name="party_symbol" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="Politician_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Politician">
           <Key>
@@ -66,6 +65,7 @@
           <Property Name="politicain_position" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="politician_type" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="Party_name" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="Post">
           <Key>
@@ -77,6 +77,7 @@
           <Property Name="post_image" Type="text" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="post_uc" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Rate">
           <Key>
@@ -99,7 +100,7 @@
           <Property Name="report_reason" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Post_id" Type="int" Nullable="false" />
-          <Property Name="Comment_id" Type="int" Nullable="false" />
+          <Property Name="Comment_id" Type="int" />
         </EntityType>
         <EntityType Name="UpgradeRequset">
           <Key>
@@ -110,6 +111,7 @@
           <Property Name="request_status" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="request_document" Type="text" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="request_date" Type="datetime" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -127,6 +129,7 @@
           <Property Name="user_gender" Type="varchar" MaxLength="255" />
           <Property Name="created_date" Type="datetime" />
           <Property Name="isDeleted" Type="tinyint" />
+          <Property Name="role" Type="varchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.AllComments' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -169,6 +172,30 @@ warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key define
           <Property Name="total_rating" Type="int" Nullable="false" />
           <Property Name="recent_comment" Type="text" />
           <Property Name="recent_comment_date" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'V1.dbo.AllReports' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="AllReports">
+          <Key>
+            <PropertyRef Name="report_id" />
+            <PropertyRef Name="report_date" />
+            <PropertyRef Name="report_status" />
+            <PropertyRef Name="report_type" />
+            <PropertyRef Name="report_reason" />
+          </Key>
+          <Property Name="report_id" Type="int" Nullable="false" />
+          <Property Name="reporter_cnic" Type="varchar" MaxLength="255" />
+          <Property Name="reporter_name" Type="varchar" MaxLength="255" />
+          <Property Name="reporter_picture" Type="text" />
+          <Property Name="reporter_gender" Type="varchar" MaxLength="255" />
+          <Property Name="reported_cnic" Type="varchar" MaxLength="255" />
+          <Property Name="reported_name" Type="varchar" MaxLength="255" />
+          <Property Name="reported_picture" Type="text" />
+          <Property Name="reported_gender" Type="varchar" MaxLength="255" />
+          <Property Name="report_date" Type="datetime" Nullable="false" />
+          <Property Name="report_status" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="report_type" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="report_reason" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -255,18 +282,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Like_Paty">
-          <End Role="Paty" Type="Self.Paty" Multiplicity="1" />
-          <End Role="Like" Type="Self.Like" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Paty">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Like">
-              <PropertyRef Name="Paty_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="Like_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Like" Type="Self.Like" Multiplicity="*" />
@@ -276,18 +291,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Principal>
             <Dependent Role="Like">
               <PropertyRef Name="User_cnic" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Paty_Politician">
-          <End Role="Politician" Type="Self.Politician" Multiplicity="1" />
-          <End Role="Paty" Type="Self.Paty" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Politician">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Paty">
-              <PropertyRef Name="Politician_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -340,7 +343,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           </ReferentialConstraint>
         </Association>
         <Association Name="Report_Comment">
-          <End Role="Comment" Type="Self.Comment" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="0..1" />
           <End Role="Report" Type="Self.Report" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Comment">
@@ -393,7 +396,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Follow" EntityType="Self.Follow" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Journalist" EntityType="Self.Journalist" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Like" EntityType="Self.Like" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Paty" EntityType="Self.Paty" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Party" EntityType="Self.Party" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Politician" EntityType="Self.Politician" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Rate" EntityType="Self.Rate" Schema="dbo" store:Type="Tables" />
@@ -427,6 +430,23 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     [AllPost].[recent_comment] AS [recent_comment], 
     [AllPost].[recent_comment_date] AS [recent_comment_date]
     FROM [dbo].[AllPost] AS [AllPost]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="AllReports" EntityType="Self.AllReports" store:Type="Views" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [AllReports].[report_id] AS [report_id], 
+    [AllReports].[reporter_cnic] AS [reporter_cnic], 
+    [AllReports].[reporter_name] AS [reporter_name], 
+    [AllReports].[reporter_picture] AS [reporter_picture], 
+    [AllReports].[reporter_gender] AS [reporter_gender], 
+    [AllReports].[reported_cnic] AS [reported_cnic], 
+    [AllReports].[reported_name] AS [reported_name], 
+    [AllReports].[reported_picture] AS [reported_picture], 
+    [AllReports].[reported_gender] AS [reported_gender], 
+    [AllReports].[report_date] AS [report_date], 
+    [AllReports].[report_status] AS [report_status], 
+    [AllReports].[report_type] AS [report_type], 
+    [AllReports].[report_reason] AS [report_reason]
+    FROM [dbo].[AllReports] AS [AllReports]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="UserInfo" EntityType="Self.UserInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -468,17 +488,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="User" EntitySet="User" />
             <End Role="Journalist" EntitySet="Journalist" />
           </AssociationSet>
-          <AssociationSet Name="Like_Paty" Association="Self.Like_Paty">
-            <End Role="Paty" EntitySet="Paty" />
-            <End Role="Like" EntitySet="Like" />
-          </AssociationSet>
           <AssociationSet Name="Like_User" Association="Self.Like_User">
             <End Role="User" EntitySet="User" />
             <End Role="Like" EntitySet="Like" />
-          </AssociationSet>
-          <AssociationSet Name="Paty_Politician" Association="Self.Paty_Politician">
-            <End Role="Politician" EntitySet="Politician" />
-            <End Role="Paty" EntitySet="Paty" />
           </AssociationSet>
           <AssociationSet Name="Politician_User" Association="Self.Politician_User">
             <End Role="User" EntitySet="User" />
@@ -513,7 +525,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="UpgradeRequset" EntitySet="UpgradeRequset" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="V1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -565,20 +578,16 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Paty_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Paty" Relationship="Self.Like_Paty" FromRole="Like" ToRole="Paty" />
           <NavigationProperty Name="User" Relationship="Self.Like_User" FromRole="Like" ToRole="User" />
         </EntityType>
-        <EntityType Name="Paty">
+        <EntityType Name="Party">
           <Key>
-            <PropertyRef Name="id" />
+            <PropertyRef Name="party_name" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="party_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="party_flag" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="party_symbol" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="Politician_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Likes" Relationship="Self.Like_Paty" FromRole="Paty" ToRole="Like" />
-          <NavigationProperty Name="Politician" Relationship="Self.Paty_Politician" FromRole="Paty" ToRole="Politician" />
         </EntityType>
         <EntityType Name="Politician">
           <Key>
@@ -588,7 +597,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="politicain_position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="politician_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <NavigationProperty Name="Paties" Relationship="Self.Paty_Politician" FromRole="Politician" ToRole="Paty" />
+          <Property Name="Party_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="User" Relationship="Self.Politician_User" FromRole="Politician" ToRole="User" />
         </EntityType>
         <EntityType Name="Post">
@@ -601,6 +610,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="post_image" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="post_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Comments" Relationship="Self.Comment_Post" FromRole="Post" ToRole="Comment" />
           <NavigationProperty Name="User" Relationship="Self.Post_User" FromRole="Post" ToRole="User" />
           <NavigationProperty Name="Rates" Relationship="Self.Rate_Post" FromRole="Post" ToRole="Rate" />
@@ -629,7 +639,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="report_reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Post_id" Type="Int32" Nullable="false" />
-          <Property Name="Comment_id" Type="Int32" Nullable="false" />
+          <Property Name="Comment_id" Type="Int32" />
           <NavigationProperty Name="Comment" Relationship="Self.Report_Comment" FromRole="Report" ToRole="Comment" />
           <NavigationProperty Name="Post" Relationship="Self.Report_Post" FromRole="Report" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Report_User" FromRole="Report" ToRole="User" />
@@ -643,6 +653,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="request_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="request_document" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="request_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="User" Relationship="Self.UpgradeRequset_User" FromRole="UpgradeRequset" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
@@ -661,6 +672,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="user_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="created_date" Type="DateTime" Precision="3" />
           <Property Name="isDeleted" Type="Byte" />
+          <Property Name="role" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Admins" Relationship="Self.Admin_User" FromRole="User" ToRole="Admin" />
           <NavigationProperty Name="Comments" Relationship="Self.Comment_User" FromRole="User" ToRole="Comment" />
           <NavigationProperty Name="Follows" Relationship="Self.Follow_User" FromRole="User" ToRole="Follow" />
@@ -710,6 +722,51 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="recent_comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="recent_comment_date" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="AllReport">
+          <Key>
+            <PropertyRef Name="report_id" />
+            <PropertyRef Name="report_date" />
+            <PropertyRef Name="report_status" />
+            <PropertyRef Name="report_type" />
+            <PropertyRef Name="report_reason" />
+          </Key>
+          <Property Name="report_id" Type="Int32" Nullable="false" />
+          <Property Name="reporter_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="reporter_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="reporter_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="reporter_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="reported_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="reported_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="reported_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="reported_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="report_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="report_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="report_type" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="report_reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserInfo">
+          <Key>
+            <PropertyRef Name="user_cnic" />
+            <PropertyRef Name="user_type" />
+            <PropertyRef Name="is_follow" />
+          </Key>
+          <Property Name="user_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="user_type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="user_total_post" Type="Int32" />
+          <Property Name="user_position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_total_followed" Type="Int32" />
+          <Property Name="user_total_following" Type="Int32" />
+          <Property Name="user_province" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_distinct" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_tehsil" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="user_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="created_date" Type="DateTime" Precision="3" />
+          <Property Name="is_follow" Type="String" MaxLength="5" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
         <Association Name="Admin_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Admin" Type="Self.Admin" Multiplicity="*" />
@@ -747,7 +804,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           </ReferentialConstraint>
         </Association>
         <Association Name="Report_Comment">
-          <End Role="Comment" Type="Self.Comment" Multiplicity="1" />
+          <End Role="Comment" Type="Self.Comment" Multiplicity="0..1" />
           <End Role="Report" Type="Self.Report" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Comment">
@@ -782,18 +839,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="Like_Paty">
-          <End Role="Paty" Type="Self.Paty" Multiplicity="1" />
-          <End Role="Like" Type="Self.Like" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Paty">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Like">
-              <PropertyRef Name="Paty_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="Like_User">
           <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Like" Type="Self.Like" Multiplicity="*" />
@@ -803,18 +848,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Principal>
             <Dependent Role="Like">
               <PropertyRef Name="User_cnic" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="Paty_Politician">
-          <End Role="Politician" Type="Self.Politician" Multiplicity="1" />
-          <End Role="Paty" Type="Self.Paty" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Politician">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Paty">
-              <PropertyRef Name="Politician_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -908,7 +941,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Follows" EntityType="Self.Follow" />
           <EntitySet Name="Journalists" EntityType="Self.Journalist" />
           <EntitySet Name="Likes" EntityType="Self.Like" />
-          <EntitySet Name="Paties" EntityType="Self.Paty" />
+          <EntitySet Name="Parties" EntityType="Self.Party" />
           <EntitySet Name="Politicians" EntityType="Self.Politician" />
           <EntitySet Name="Posts" EntityType="Self.Post" />
           <EntitySet Name="Rates" EntityType="Self.Rate" />
@@ -917,6 +950,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="AllComments" EntityType="Self.AllComment" />
           <EntitySet Name="AllPosts" EntityType="Self.AllPost" />
+          <EntitySet Name="AllReports" EntityType="Self.AllReport" />
+          <EntitySet Name="UserInfoes" EntityType="Self.UserInfo" />
           <AssociationSet Name="Admin_User" Association="Self.Admin_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Admin" EntitySet="Admins" />
@@ -941,17 +976,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="User" EntitySet="Users" />
             <End Role="Journalist" EntitySet="Journalists" />
           </AssociationSet>
-          <AssociationSet Name="Like_Paty" Association="Self.Like_Paty">
-            <End Role="Paty" EntitySet="Paties" />
-            <End Role="Like" EntitySet="Likes" />
-          </AssociationSet>
           <AssociationSet Name="Like_User" Association="Self.Like_User">
             <End Role="User" EntitySet="Users" />
             <End Role="Like" EntitySet="Likes" />
-          </AssociationSet>
-          <AssociationSet Name="Paty_Politician" Association="Self.Paty_Politician">
-            <End Role="Politician" EntitySet="Politicians" />
-            <End Role="Paty" EntitySet="Paties" />
           </AssociationSet>
           <AssociationSet Name="Politician_User" Association="Self.Politician_User">
             <End Role="User" EntitySet="Users" />
@@ -981,31 +1008,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="User" EntitySet="Users" />
             <End Role="UpgradeRequset" EntitySet="UpgradeRequsets" />
           </AssociationSet>
-          <EntitySet Name="UserInfoes" EntityType="V1Model.UserInfo" />
         </EntityContainer>
-        <EntityType Name="UserInfo">
-          <Key>
-            <PropertyRef Name="user_cnic" />
-            <PropertyRef Name="user_type" />
-            <PropertyRef Name="is_follow" />
-          </Key>
-          <Property Name="user_cnic" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="user_type" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
-          <Property Name="user_total_post" Type="Int32" />
-          <Property Name="user_position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_total_followed" Type="Int32" />
-          <Property Name="user_total_following" Type="Int32" />
-          <Property Name="user_province" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_distinct" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_tehsil" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_phone" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="user_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="created_date" Type="DateTime" Precision="3" />
-          <Property Name="is_follow" Type="String" Nullable="false" MaxLength="5" FixedLength="false" Unicode="false" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1060,14 +1063,13 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Paties">
-            <EntityTypeMapping TypeName="V1Model.Paty">
-              <MappingFragment StoreEntitySet="Paty">
+          <EntitySetMapping Name="Parties">
+            <EntityTypeMapping TypeName="V1Model.Party">
+              <MappingFragment StoreEntitySet="Party">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="party_name" ColumnName="party_name" />
                 <ScalarProperty Name="party_flag" ColumnName="party_flag" />
                 <ScalarProperty Name="party_symbol" ColumnName="party_symbol" />
-                <ScalarProperty Name="Politician_id" ColumnName="Politician_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1078,6 +1080,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="politicain_position" ColumnName="politicain_position" />
                 <ScalarProperty Name="politician_type" ColumnName="politician_type" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="Party_name" ColumnName="Party_name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1090,6 +1093,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="post_image" ColumnName="post_image" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="post_uc" ColumnName="post_uc" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1126,6 +1130,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="request_status" ColumnName="request_status" />
                 <ScalarProperty Name="request_document" ColumnName="request_document" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="request_date" ColumnName="request_date" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1144,6 +1149,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="user_gender" ColumnName="user_gender" />
                 <ScalarProperty Name="created_date" ColumnName="created_date" />
                 <ScalarProperty Name="isDeleted" ColumnName="isDeleted" />
+                <ScalarProperty Name="role" ColumnName="role" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1179,25 +1185,44 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="AllReports">
+            <EntityTypeMapping TypeName="V1Model.AllReport">
+              <MappingFragment StoreEntitySet="AllReports">
+                <ScalarProperty Name="report_id" ColumnName="report_id" />
+                <ScalarProperty Name="reporter_cnic" ColumnName="reporter_cnic" />
+                <ScalarProperty Name="reporter_name" ColumnName="reporter_name" />
+                <ScalarProperty Name="reporter_picture" ColumnName="reporter_picture" />
+                <ScalarProperty Name="reporter_gender" ColumnName="reporter_gender" />
+                <ScalarProperty Name="reported_cnic" ColumnName="reported_cnic" />
+                <ScalarProperty Name="reported_name" ColumnName="reported_name" />
+                <ScalarProperty Name="reported_picture" ColumnName="reported_picture" />
+                <ScalarProperty Name="reported_gender" ColumnName="reported_gender" />
+                <ScalarProperty Name="report_date" ColumnName="report_date" />
+                <ScalarProperty Name="report_status" ColumnName="report_status" />
+                <ScalarProperty Name="report_type" ColumnName="report_type" />
+                <ScalarProperty Name="report_reason" ColumnName="report_reason" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="UserInfoes">
             <EntityTypeMapping TypeName="V1Model.UserInfo">
               <MappingFragment StoreEntitySet="UserInfo">
-                <ScalarProperty Name="is_follow" ColumnName="is_follow" />
-                <ScalarProperty Name="created_date" ColumnName="created_date" />
-                <ScalarProperty Name="user_gender" ColumnName="user_gender" />
-                <ScalarProperty Name="user_phone" ColumnName="user_phone" />
-                <ScalarProperty Name="user_uc" ColumnName="user_uc" />
-                <ScalarProperty Name="user_tehsil" ColumnName="user_tehsil" />
-                <ScalarProperty Name="user_distinct" ColumnName="user_distinct" />
-                <ScalarProperty Name="user_province" ColumnName="user_province" />
-                <ScalarProperty Name="user_total_following" ColumnName="user_total_following" />
-                <ScalarProperty Name="user_total_followed" ColumnName="user_total_followed" />
-                <ScalarProperty Name="user_position" ColumnName="user_position" />
-                <ScalarProperty Name="user_total_post" ColumnName="user_total_post" />
-                <ScalarProperty Name="user_type" ColumnName="user_type" />
-                <ScalarProperty Name="user_picture" ColumnName="user_picture" />
-                <ScalarProperty Name="user_name" ColumnName="user_name" />
                 <ScalarProperty Name="user_cnic" ColumnName="user_cnic" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+                <ScalarProperty Name="user_picture" ColumnName="user_picture" />
+                <ScalarProperty Name="user_type" ColumnName="user_type" />
+                <ScalarProperty Name="user_total_post" ColumnName="user_total_post" />
+                <ScalarProperty Name="user_position" ColumnName="user_position" />
+                <ScalarProperty Name="user_total_followed" ColumnName="user_total_followed" />
+                <ScalarProperty Name="user_total_following" ColumnName="user_total_following" />
+                <ScalarProperty Name="user_province" ColumnName="user_province" />
+                <ScalarProperty Name="user_distinct" ColumnName="user_distinct" />
+                <ScalarProperty Name="user_tehsil" ColumnName="user_tehsil" />
+                <ScalarProperty Name="user_uc" ColumnName="user_uc" />
+                <ScalarProperty Name="user_phone" ColumnName="user_phone" />
+                <ScalarProperty Name="user_gender" ColumnName="user_gender" />
+                <ScalarProperty Name="created_date" ColumnName="created_date" />
+                <ScalarProperty Name="is_follow" ColumnName="is_follow" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

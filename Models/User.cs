@@ -41,6 +41,7 @@ namespace FypApi.Models
         public string user_gender { get; set; }
         public Nullable<System.DateTime> created_date { get; set; }
         public Nullable<byte> isDeleted { get; set; }
+        public string role { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Admin> Admins { get; set; }

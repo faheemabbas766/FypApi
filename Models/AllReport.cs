@@ -12,19 +12,20 @@ namespace FypApi.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Report
+    public partial class AllReport
     {
-        public int id { get; set; }
+        public int report_id { get; set; }
+        public string reporter_cnic { get; set; }
+        public string reporter_name { get; set; }
+        public string reporter_picture { get; set; }
+        public string reporter_gender { get; set; }
+        public string reported_cnic { get; set; }
+        public string reported_name { get; set; }
+        public string reported_picture { get; set; }
+        public string reported_gender { get; set; }
         public System.DateTime report_date { get; set; }
         public string report_status { get; set; }
         public string report_type { get; set; }
         public string report_reason { get; set; }
-        public string User_cnic { get; set; }
-        public int Post_id { get; set; }
-        public Nullable<int> Comment_id { get; set; }
-    
-        public virtual Comment Comment { get; set; }
-        public virtual Post Post { get; set; }
-        public virtual User User { get; set; }
     }
 }
