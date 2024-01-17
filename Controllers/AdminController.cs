@@ -16,11 +16,37 @@ namespace FypApi.Controllers
     {
         V1Entities db = new V1Entities();
         [HttpPost]
+        public HttpResponseMessage AllUpgradeRequsets()
+        {
+            try
+            {
+                var list = db.UpgradeRequsets.Where((e) => e.request_status == "pending").ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
         public HttpResponseMessage AllReports()
         {
             try
             {
                 var list = db.AllReports.Where((e) => e.report_status == "pending").ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage AllReviewPost()
+        {
+            try
+            {
+                var list = db.AllPosts.Where((e) => e.status == "Review").ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)

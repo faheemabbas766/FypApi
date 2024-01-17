@@ -7,12 +7,81 @@ using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using ProfanityFilter;
 
 namespace FypApi.Controllers
 {
     public class MainController : ApiController
     {
+        static List<string> filterWords = new List<string> {
+            "badword1",
+            "badword2",
+            "badword3",
+            "badword4",
+            "badword5",
+            "badword6",
+            "badword7",
+            "badword8",
+            "badword9",
+        };
+        private static ProfanityFilter.ProfanityFilter profanityFilter = new ProfanityFilter.ProfanityFilter(filterWords);
         V1Entities db = new V1Entities();
+        [HttpPost]
+        public HttpResponseMessage AddPost()
+        {
+            try
+            {
+                var post = new Post
+                {
+                    post_date = DateTime.Now,
+                    post_text = HttpContext.Current.Request.Form["post_text"],
+                    User_cnic = HttpContext.Current.Request.Form["user_cnic"],
+                    post_uc = HttpContext.Current.Request.Form["post_uc"]
+                };
+                string[] words = post.post_text.Split(' ');
+
+                // Check each word for profanity
+                bool containsProfanity = false;
+                foreach (var word in words)
+                {
+                    if (profanityFilter.IsProfanity(word))
+                    {
+                        containsProfanity = true;
+                        break; // Break out of the loop if profanity is found
+                    }
+                }
+
+                if (containsProfanity)
+                {
+                    post.status = "Review";
+                }
+                else
+                {
+                    post.status = "Approved";
+                }
+                var postedFile = HttpContext.Current.Request.Files["post_image"];
+                if (postedFile != null && postedFile.ContentLength > 0 &&
+                (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                {
+                    // Generate a unique file name to avoid overwriting existing files
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
+
+                    // Define the folder to save the uploaded images (adjust the path as needed)
+                    string filePath = HttpContext.Current.Server.MapPath("~/Uploads/") + fileName;
+
+                    // Save the file to the server
+                    postedFile.SaveAs(filePath);
+                    post.post_image = fileName;
+                }
+                db.Posts.Add(post);
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, post);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
         [HttpPost]
         public HttpResponseMessage AllPost(String uc)
         {
@@ -34,7 +103,6 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
         [HttpPost]
         public HttpResponseMessage AllCommentsByPostId(int postId)
         {
@@ -48,7 +116,6 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
         [HttpPost]
         public HttpResponseMessage UserInfoById(string profileCinc, string cinc)
         {
@@ -71,7 +138,6 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
         [HttpPost]
         public HttpResponseMessage RatePost(int postId, int score, String cnic)
         {
@@ -163,42 +229,6 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage AddPost()
-        {
-            try
-            {
-                var post = new Post
-                {
-                    post_date = DateTime.Now,
-                    post_text = HttpContext.Current.Request.Form["post_text"],
-                    User_cnic = HttpContext.Current.Request.Form["user_cnic"],
-                    post_uc = HttpContext.Current.Request.Form["post_uc"]
-                };
-                var postedFile = HttpContext.Current.Request.Files["post_image"];
-                if (postedFile != null && postedFile.ContentLength > 0 &&
-                (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
-                {
-                    // Generate a unique file name to avoid overwriting existing files
-                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
-
-                    // Define the folder to save the uploaded images (adjust the path as needed)
-                    string filePath = HttpContext.Current.Server.MapPath("~/Uploads/") + fileName;
-
-                    // Save the file to the server
-                    postedFile.SaveAs(filePath);
-                    post.post_image = fileName;
-                }
-                db.Posts.Add(post);
-                db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, post);
-            }
-            catch (Exception ex)
-            {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
-            }
-        }
-
-        [HttpPost]
         public HttpResponseMessage AddComment(int postId, String cnic, String commentText)
         {
             try
@@ -212,7 +242,6 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
         [HttpPost]
         public HttpResponseMessage FollowById(string userCnic, string accountCnic)
         {

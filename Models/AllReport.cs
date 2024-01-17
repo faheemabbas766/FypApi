@@ -27,5 +27,7 @@ namespace FypApi.Models
         public string report_status { get; set; }
         public string report_type { get; set; }
         public string report_reason { get; set; }
+        public Nullable<int> reported_item_id { get; set; }
+        public string reported_item_content { get; set; }
     }
 }

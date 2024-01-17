@@ -27,5 +27,6 @@ namespace FypApi.Models
         public int total_rating { get; set; }
         public string recent_comment { get; set; }
         public Nullable<System.DateTime> recent_comment_date { get; set; }
+        public string status { get; set; }
     }
 }
