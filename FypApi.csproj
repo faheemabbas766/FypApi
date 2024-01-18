@@ -348,7 +348,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\" />
+    <Folder Include="Uploads\Profile\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

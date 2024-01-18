@@ -20,7 +20,16 @@ namespace FypApi.Controllers
         {
             try
             {
-                var list = db.UpgradeRequsets.Where((e) => e.request_status == "pending").ToList();
+                var list = db.UpgradeRequsets.Where((e) => e.request_status == "pending").Select(s => new
+                {
+                    s.request_type,
+                    s.User_cnic,
+                    s.User.full_name,
+                    s.User.user_pic,
+                    s.request_status,
+                    s.request_document,
+                    s.request_date,
+                }).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)

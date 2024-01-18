@@ -26,6 +26,8 @@ namespace FypApi.Controllers
         };
         private static ProfanityFilter.ProfanityFilter profanityFilter = new ProfanityFilter.ProfanityFilter(filterWords);
         V1Entities db = new V1Entities();
+
+
         [HttpPost]
         public HttpResponseMessage AddPost()
         {
@@ -39,15 +41,13 @@ namespace FypApi.Controllers
                     post_uc = HttpContext.Current.Request.Form["post_uc"]
                 };
                 string[] words = post.post_text.Split(' ');
-
-                // Check each word for profanity
                 bool containsProfanity = false;
                 foreach (var word in words)
                 {
                     if (profanityFilter.IsProfanity(word))
                     {
                         containsProfanity = true;
-                        break; // Break out of the loop if profanity is found
+                        break;
                     }
                 }
 
@@ -83,10 +83,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage AllPost(String uc)
+        public HttpResponseMessage AllPost()
         {
             try
             {
+
+                String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
                     var list = db.AllPosts.Where((e) => e.post_uc == uc).ToList();
@@ -332,6 +334,5 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
     }
 }
