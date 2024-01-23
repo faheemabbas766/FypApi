@@ -1,6 +1,7 @@
 ﻿using FypApi.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Migrations;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace FypApi.Controllers
     {
         V1Entities db = new V1Entities();
         [HttpPost]
-        public HttpResponseMessage AllUpgradeRequsets()
+        public HttpResponseMessage AllUpgradeRequests()
         {
             try
             {
@@ -57,6 +58,27 @@ namespace FypApi.Controllers
             {
                 var list = db.AllPosts.Where((e) => e.status == "Review").ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage UpdateReviewPost(int pid, String status)
+        {
+            try
+            {
+                var post = db.Posts.Where((e)=> e.id == pid).FirstOrDefault();
+                if(post != null)
+                {
+                    post.status = status;
+                    return Request.CreateResponse(HttpStatusCode.OK, "Review Complete!!!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Review Failed!!!");
+                }
             }
             catch (Exception ex)
             {
@@ -117,7 +139,7 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage AddPolitician(String politician_position, String politician_type, String cnic)
+        public HttpResponseMessage AddPolitician(String politician_position, String politician_type, String cnic,String party=null)
         {
             try
             {
@@ -126,6 +148,7 @@ namespace FypApi.Controllers
                 {
                     res.politicain_position = politician_position;
                     res.politician_type = politician_type;
+                    res.Party_name = party;
                     var a = db.Users.Where((i) => i.cnic == cnic).FirstOrDefault();
                     a.role = "Politician";
                     db.SaveChanges();
@@ -133,7 +156,7 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    db.Politicians.Add(new Politician() { User_cnic = cnic, politicain_position = politician_position, politician_type = politician_type });
+                    db.Politicians.Add(new Politician() { User_cnic = cnic, politicain_position = politician_position, politician_type = politician_type, Party_name = party });
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, "Politician Added");
                 }
@@ -214,6 +237,24 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
+        [HttpPost]
+        public HttpResponseMessage UpdateRequest(String cnic, String status)
+        {
+            try
+            {
+                UpgradeRequset upgradeRequest = db.UpgradeRequsets.Where(e => e.User_cnic == cnic).OrderByDescending(e => e.request_date).FirstOrDefault();
+                if (upgradeRequest != null)
+                {
+                    upgradeRequest.request_status = status; 
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Request Completed");
+                }
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Request Failed");
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
     }
 }

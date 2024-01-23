@@ -72,7 +72,7 @@ namespace FypApi.Controllers
                         user_phone = HttpContext.Current.Request.Form["user_phone"],
                         isDeleted = 0,
                         role = "Citizen",
-                        user_gender = (lastDigit % 2 == 1) ? "female" : "male",
+                        user_gender = (lastDigit % 2 == 0) ? "female" : "male",
                         created_date = DateTime.Now,
                     };
 

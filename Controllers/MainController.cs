@@ -27,7 +27,6 @@ namespace FypApi.Controllers
         private static ProfanityFilter.ProfanityFilter profanityFilter = new ProfanityFilter.ProfanityFilter(filterWords);
         V1Entities db = new V1Entities();
 
-
         [HttpPost]
         public HttpResponseMessage AddPost()
         {
@@ -76,6 +75,41 @@ namespace FypApi.Controllers
                 db.Posts.Add(post);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, post);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage DeletePost(int pid)
+        {
+            try
+            {
+                var post = db.Posts.Find(pid);
+                if (post != null)
+                {
+                    post.status = "Delete";
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, "Post Deleted!!!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Post Not Found!!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage AllParties()
+        {
+            try
+            {
+                var list = db.Parties.ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
             {
@@ -334,5 +368,28 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+        [HttpPost]
+        public HttpResponseMessage ChangeParty(string userCnic, string party)
+        {
+            try
+            {
+                var politician = db.Politicians.FirstOrDefault(f => f.User_cnic == userCnic);
+                if (politician != null)
+                {
+                    politician.Party_name = party;
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, "Party Change Successful");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Politician not Found!!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
     }
 }
