@@ -16,10 +16,12 @@ namespace FypApi.Controllers
         V1Entities db = new V1Entities();
 
         [HttpPost]
-        public HttpResponseMessage Login(String cnic, String password)
+        public HttpResponseMessage Login()
         {
             try
             {
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+                string password = HttpContext.Current.Request.Form["password"];
                 var user = db.Users.Where(e => e.cnic == cnic && e.isDeleted == 0).Select(s => new
                 {
                     s.cnic,
