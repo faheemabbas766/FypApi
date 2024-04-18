@@ -122,16 +122,71 @@ namespace FypApi.Controllers
         {
             try
             {
-                String name = HttpContext.Current.Request.Form["name"];
-                String cnic = HttpContext.Current.Request.Form["cnic"];
-                var list = db.Parties.ToList();
-                return Request.CreateResponse(HttpStatusCode.OK, list);
+                string name = HttpContext.Current.Request.Form["name"];
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+
+                IQueryable<Politician> politiciansQuery = db.Politicians;
+
+                // Perform the join with the Users table
+                var query = politiciansQuery
+                    .Join(db.Users,
+                        politician => politician.User_cnic,
+                        user => (string)user.cnic,
+                        (politician, user) => new
+                        {
+                            Politician = politician,
+                            User = user
+                        });
+
+                // Select only the Politician part from the query
+                politiciansQuery = query.Select(joined => joined.Politician);
+
+
+                // Filter based on the conditions
+                if (!string.IsNullOrEmpty(cnic))
+                {
+                    // Return matching politician data based on cnic
+                    politiciansQuery = politiciansQuery.Where(joined => joined.User_cnic == cnic);
+                }
+                else if (!string.IsNullOrEmpty(name))
+                {
+                    // Return top 10 politicians with names similar to the provided name
+                    politiciansQuery = politiciansQuery.Where(joined => joined.User.full_name.Contains(name)).Take(10);
+                }
+
+                // Select the desired columns from both tables
+                var result = politiciansQuery
+                    .Select(joined => new
+                    {
+                        PoliticianId = joined.id,
+                        PoliticianCNIC = joined.User_cnic,
+                        PoliticianPosition = joined.politicain_position,
+                        PoliticianParty = joined.Party_name,
+                        UserFullName = joined.User.full_name,
+                        UserPassword = joined.User.password,
+                        UserProvince = joined.User.user_province,
+                        UserDistrict = joined.User.user_distinct,
+                        UserTehsil = joined.User.user_tehsil,
+                        UserUC = joined.User.user_uc,
+                        UserPhone = joined.User.user_phone,
+                        UserPic = joined.User.user_pic,
+                        UserGender = joined.User.user_gender,
+                        UserCreatedDate = joined.User.created_date,
+                        UserIsDeleted = joined.User.isDeleted,
+                        UserRole = joined.User.role
+                    })
+                    .ToList();
+
+                return Request.CreateResponse(HttpStatusCode.OK, result);
             }
             catch (Exception ex)
             {
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+
+
         [HttpPost]
         public HttpResponseMessage AllPost()
         {
