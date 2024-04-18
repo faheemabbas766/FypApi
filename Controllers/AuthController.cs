@@ -89,7 +89,21 @@ namespace FypApi.Controllers
                     }
                     db.Users.Add(u);
                     db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK, u);
+                    var user = new
+                    {
+                        u.cnic,
+                        u.full_name,
+                        u.password,
+                        u.user_province,
+                        u.user_distinct,
+                        u.user_tehsil,
+                        u.user_uc,
+                        u.user_phone,
+                        u.user_pic,
+                        u.user_gender,
+                        u.role
+                    };
+                    return Request.CreateResponse(HttpStatusCode.OK, user);
                 }
                 else
                 {

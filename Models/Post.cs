@@ -29,6 +29,7 @@ namespace FypApi.Models
         public string User_cnic { get; set; }
         public string post_uc { get; set; }
         public string status { get; set; }
+        public string politician_id { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Comment> Comments { get; set; }

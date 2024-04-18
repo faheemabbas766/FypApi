@@ -35,6 +35,7 @@
         <AssociationConnector Association="V1Model.Rate_User" ManuallyRouted="false" />
         <AssociationConnector Association="V1Model.Report_User" ManuallyRouted="false" />
         <AssociationConnector Association="V1Model.UpgradeRequset_User" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="V1Model.sysdiagram" Width="1.5" PointX="0.75" PointY="6.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

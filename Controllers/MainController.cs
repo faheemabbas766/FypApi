@@ -37,7 +37,8 @@ namespace FypApi.Controllers
                     post_date = DateTime.Now,
                     post_text = HttpContext.Current.Request.Form["post_text"],
                     User_cnic = HttpContext.Current.Request.Form["user_cnic"],
-                    post_uc = HttpContext.Current.Request.Form["post_uc"]
+                    post_uc = HttpContext.Current.Request.Form["post_uc"],
+                    politician_id = HttpContext.Current.Request.Form["politician_id"],
                 };
                 string[] words = post.post_text.Split(' ');
                 bool containsProfanity = false;
@@ -74,7 +75,7 @@ namespace FypApi.Controllers
                 }
                 db.Posts.Add(post);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, post);
+                return Request.CreateResponse(HttpStatusCode.OK, post.status);
             }
             catch (Exception ex)
             {
@@ -108,6 +109,21 @@ namespace FypApi.Controllers
         {
             try
             {
+                var list = db.Parties.ToList();
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage AllPolitician()
+        {
+            try
+            {
+                String name = HttpContext.Current.Request.Form["name"];
+                String cnic = HttpContext.Current.Request.Form["cnic"];
                 var list = db.Parties.ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
