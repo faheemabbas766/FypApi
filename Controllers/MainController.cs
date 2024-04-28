@@ -191,6 +191,7 @@ namespace FypApi.Controllers
             try
             {
 
+                String cnic = HttpContext.Current.Request.Form["cnic"];
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
