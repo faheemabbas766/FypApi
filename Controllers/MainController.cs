@@ -195,12 +195,48 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-                    var list = db.AllPosts.Where((e) => e.post_uc == uc).ToList();
+                    var list = db.AllPosts.Where((e) => e.post_uc == uc).Select(p => new
+                    {
+                        post_id = p.post_id,
+                        post_date = p.post_date,
+                        post_text = p.post_text,
+                        post_image = p.post_image,
+                        post_uc = p.post_uc,
+                        user_cnic = p.user_cnic,
+                        user_name = p.user_name,
+                        user_picture = p.user_picture,
+                        account_type = p.account_type,
+                        position = p.position,
+                        total_rating = p.total_rating,
+                        recent_comment = p.recent_comment,
+                        recent_comment_date = p.recent_comment_date,
+                        status = p.status,
+                        rated = db.Rates.Where(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic).Select(f => new { f.rate_score }),
+                        followed = db.Follows.Where(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic).FirstOrDefault().User_cnic,
+                    }).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
                 else
                 {
-                    var list = db.AllPosts;
+                    var list = db.AllPosts.Select(p => new
+                    {
+                        post_id = p.post_id,
+                        post_date = p.post_date,
+                        post_text = p.post_text,
+                        post_image = p.post_image,
+                        post_uc = p.post_uc,
+                        user_cnic = p.user_cnic,
+                        user_name = p.user_name,
+                        user_picture = p.user_picture,
+                        account_type = p.account_type,
+                        position = p.position,
+                        total_rating = p.total_rating,
+                        recent_comment = p.recent_comment,
+                        recent_comment_date = p.recent_comment_date,
+                        status = p.status,
+                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic).rate_score : (int?)null,
+                        followed = db.Follows.FirstOrDefault(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic) != null ? db.Follows.FirstOrDefault(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic).User_cnic : null,
+                    }).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
             }
