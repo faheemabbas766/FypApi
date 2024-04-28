@@ -25,7 +25,7 @@ namespace FypApi.Controllers
             "badword9",
         };
         private static ProfanityFilter.ProfanityFilter profanityFilter = new ProfanityFilter.ProfanityFilter(filterWords);
-        V1Entities db = new V1Entities();
+        V1Entities1 db = new V1Entities1();
 
         [HttpPost]
         public HttpResponseMessage AddPost()

@@ -19,15 +19,15 @@ namespace FypApi.Models
         public string reporter_name { get; set; }
         public string reporter_picture { get; set; }
         public string reporter_gender { get; set; }
+        public string report_type { get; set; }
+        public Nullable<int> reported_item_id { get; set; }
+        public string reported_item_content { get; set; }
         public string reported_cnic { get; set; }
         public string reported_name { get; set; }
         public string reported_picture { get; set; }
         public string reported_gender { get; set; }
         public System.DateTime report_date { get; set; }
         public string report_status { get; set; }
-        public string report_type { get; set; }
         public string report_reason { get; set; }
-        public Nullable<int> reported_item_id { get; set; }
-        public string reported_item_content { get; set; }
     }
 }

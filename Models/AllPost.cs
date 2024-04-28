@@ -28,5 +28,6 @@ namespace FypApi.Models
         public string recent_comment { get; set; }
         public Nullable<System.DateTime> recent_comment_date { get; set; }
         public string status { get; set; }
+        public string politician_id { get; set; }
     }
 }

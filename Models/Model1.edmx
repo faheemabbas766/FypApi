@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="id" />
@@ -184,6 +184,7 @@ warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key define
           <Property Name="recent_comment" Type="text" />
           <Property Name="recent_comment_date" Type="datetime" />
           <Property Name="status" Type="varchar" MaxLength="50" />
+          <Property Name="politician_id" Type="varchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.AllReports' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -444,7 +445,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     [AllPost].[total_rating] AS [total_rating], 
     [AllPost].[recent_comment] AS [recent_comment], 
     [AllPost].[recent_comment_date] AS [recent_comment_date], 
-    [AllPost].[status] AS [status]
+    [AllPost].[status] AS [status], 
+    [AllPost].[politician_id] AS [politician_id]
     FROM [dbo].[AllPost] AS [AllPost]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AllReports" EntityType="Self.AllReports" store:Type="Views" store:Schema="dbo">
@@ -543,7 +545,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="UpgradeRequset" EntitySet="UpgradeRequset" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="V1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -628,11 +631,11 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="post_uc" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="politician_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Comments" Relationship="Self.Comment_Post" FromRole="Post" ToRole="Comment" />
           <NavigationProperty Name="User" Relationship="Self.Post_User" FromRole="Post" ToRole="User" />
           <NavigationProperty Name="Rates" Relationship="Self.Rate_Post" FromRole="Post" ToRole="Rate" />
           <NavigationProperty Name="Reports" Relationship="Self.Report_Post" FromRole="Post" ToRole="Report" />
-          <Property Name="politician_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Rate">
           <Key>
@@ -661,6 +664,16 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <NavigationProperty Name="Comment" Relationship="Self.Report_Comment" FromRole="Report" ToRole="Comment" />
           <NavigationProperty Name="Post" Relationship="Self.Report_Post" FromRole="Report" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Report_User" FromRole="Report" ToRole="User" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="UpgradeRequset">
           <Key>
@@ -740,13 +753,14 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="recent_comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="recent_comment_date" Type="DateTime" Precision="3" />
           <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="politician_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AllReport">
           <Key>
             <PropertyRef Name="report_id" />
+            <PropertyRef Name="report_type" />
             <PropertyRef Name="report_date" />
             <PropertyRef Name="report_status" />
-            <PropertyRef Name="report_type" />
             <PropertyRef Name="report_reason" />
           </Key>
           <Property Name="report_id" Type="Int32" Nullable="false" />
@@ -754,16 +768,16 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="reporter_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="reporter_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="reporter_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="report_type" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="reported_item_id" Type="Int32" />
+          <Property Name="reported_item_content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="reported_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="reported_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="reported_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="reported_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
           <Property Name="report_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="report_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="report_type" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="report_reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="reported_item_id" Type="Int32" />
-          <Property Name="reported_item_content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="UserInfo">
           <Key>
@@ -956,7 +970,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="V1Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="V1Entities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Admins" EntityType="Self.Admin" />
           <EntitySet Name="Comments" EntityType="Self.Comment" />
           <EntitySet Name="Follows" EntityType="Self.Follow" />
@@ -967,6 +981,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Posts" EntityType="Self.Post" />
           <EntitySet Name="Rates" EntityType="Self.Rate" />
           <EntitySet Name="Reports" EntityType="Self.Report" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="UpgradeRequsets" EntityType="Self.UpgradeRequset" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="AllComments" EntityType="Self.AllComment" />
@@ -1029,24 +1044,13 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="User" EntitySet="Users" />
             <End Role="UpgradeRequset" EntitySet="UpgradeRequsets" />
           </AssociationSet>
-          <EntitySet Name="sysdiagrams" EntityType="V1Model.sysdiagram" />
         </EntityContainer>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="V1ModelStoreContainer" CdmEntityContainer="V1Entities">
+        <EntityContainerMapping StorageEntityContainer="V1ModelStoreContainer" CdmEntityContainer="V1Entities1">
           <EntitySetMapping Name="Admins">
             <EntityTypeMapping TypeName="V1Model.Admin">
               <MappingFragment StoreEntitySet="Admin">
@@ -1119,7 +1123,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="Posts">
             <EntityTypeMapping TypeName="V1Model.Post">
               <MappingFragment StoreEntitySet="Post">
-                <ScalarProperty Name="politician_id" ColumnName="politician_id" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="post_date" ColumnName="post_date" />
                 <ScalarProperty Name="post_text" ColumnName="post_text" />
@@ -1127,6 +1130,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="post_uc" ColumnName="post_uc" />
                 <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="politician_id" ColumnName="politician_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1152,6 +1156,17 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="Post_id" ColumnName="Post_id" />
                 <ScalarProperty Name="Comment_id" ColumnName="Comment_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="V1Model.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1202,7 +1217,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="AllPosts">
             <EntityTypeMapping TypeName="V1Model.AllPost">
               <MappingFragment StoreEntitySet="AllPost">
-                <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="post_id" ColumnName="post_id" />
                 <ScalarProperty Name="post_date" ColumnName="post_date" />
                 <ScalarProperty Name="post_text" ColumnName="post_text" />
@@ -1216,26 +1230,28 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="total_rating" ColumnName="total_rating" />
                 <ScalarProperty Name="recent_comment" ColumnName="recent_comment" />
                 <ScalarProperty Name="recent_comment_date" ColumnName="recent_comment_date" />
+                <ScalarProperty Name="status" ColumnName="status" />
+                <ScalarProperty Name="politician_id" ColumnName="politician_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AllReports">
             <EntityTypeMapping TypeName="V1Model.AllReport">
               <MappingFragment StoreEntitySet="AllReports">
-                <ScalarProperty Name="reported_item_content" ColumnName="reported_item_content" />
-                <ScalarProperty Name="reported_item_id" ColumnName="reported_item_id" />
                 <ScalarProperty Name="report_id" ColumnName="report_id" />
                 <ScalarProperty Name="reporter_cnic" ColumnName="reporter_cnic" />
                 <ScalarProperty Name="reporter_name" ColumnName="reporter_name" />
                 <ScalarProperty Name="reporter_picture" ColumnName="reporter_picture" />
                 <ScalarProperty Name="reporter_gender" ColumnName="reporter_gender" />
+                <ScalarProperty Name="report_type" ColumnName="report_type" />
+                <ScalarProperty Name="reported_item_id" ColumnName="reported_item_id" />
+                <ScalarProperty Name="reported_item_content" ColumnName="reported_item_content" />
                 <ScalarProperty Name="reported_cnic" ColumnName="reported_cnic" />
                 <ScalarProperty Name="reported_name" ColumnName="reported_name" />
                 <ScalarProperty Name="reported_picture" ColumnName="reported_picture" />
                 <ScalarProperty Name="reported_gender" ColumnName="reported_gender" />
                 <ScalarProperty Name="report_date" ColumnName="report_date" />
                 <ScalarProperty Name="report_status" ColumnName="report_status" />
-                <ScalarProperty Name="report_type" ColumnName="report_type" />
                 <ScalarProperty Name="report_reason" ColumnName="report_reason" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1259,17 +1275,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="user_gender" ColumnName="user_gender" />
                 <ScalarProperty Name="created_date" ColumnName="created_date" />
                 <ScalarProperty Name="is_follow" ColumnName="is_follow" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="V1Model.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="definition" ColumnName="definition" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
