@@ -16,6 +16,7 @@ namespace FypApi.Controllers
     public class AdminController : ApiController
     {
         V1Entities db = new V1Entities();
+
         [HttpPost]
         public HttpResponseMessage AllUpgradeRequests()
         {
@@ -38,6 +39,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage AllReports()
         {
@@ -51,6 +53,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage AllReviewPost()
         {
@@ -64,13 +67,17 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage UpdateReviewPost(int pid, String status)
+        public HttpResponseMessage UpdateReviewPost()
         {
             try
             {
-                var post = db.Posts.Where((e)=> e.id == pid).FirstOrDefault();
-                if(post != null)
+                int pid = int.Parse(HttpContext.Current.Request.Form["pid"]);
+                string status = HttpContext.Current.Request.Form["status"];
+
+                var post = db.Posts.Where((e) => e.id == pid).FirstOrDefault();
+                if (post != null)
                 {
                     post.status = status;
                     return Request.CreateResponse(HttpStatusCode.OK, "Review Complete!!!");
@@ -85,11 +92,15 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage AddAdmin(String cnic, String type)
+        public HttpResponseMessage AddAdmin()
         {
             try
             {
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+                string type = HttpContext.Current.Request.Form["type"];
+
                 var res = db.Admins.Where((e) => e.User_cnic == cnic).FirstOrDefault();
                 if (res != null)
                 {
@@ -111,11 +122,16 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage AddJournalist(String cnic, String experience, String reference)
+        public HttpResponseMessage AddJournalist()
         {
             try
             {
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+                string experience = HttpContext.Current.Request.Form["experience"];
+                string reference = HttpContext.Current.Request.Form["reference"];
+
                 var res = db.Journalists.Where((e) => e.User_cnic == cnic).FirstOrDefault();
                 if (res != null)
                 {
@@ -138,11 +154,17 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage AddPolitician(String politician_position, String politician_type, String cnic,String party=null)
+        public HttpResponseMessage AddPolitician()
         {
             try
             {
+                string politician_position = HttpContext.Current.Request.Form["politician_position"];
+                string politician_type = HttpContext.Current.Request.Form["politician_type"];
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+                string party = HttpContext.Current.Request.Form["party"];
+
                 var res = db.Politicians.Where((e) => e.User_cnic == cnic).FirstOrDefault();
                 if (res != null)
                 {
@@ -166,6 +188,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage AddParty()
         {
@@ -237,17 +260,21 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
-        public HttpResponseMessage UpdateRequest(String cnic, String status)
+        public HttpResponseMessage UpdateRequest()
         {
             try
             {
+                string cnic = HttpContext.Current.Request.Form["cnic"];
+                string status = HttpContext.Current.Request.Form["status"];
+
                 UpgradeRequset upgradeRequest = db.UpgradeRequsets.Where(e => e.User_cnic == cnic).OrderByDescending(e => e.request_date).FirstOrDefault();
                 if (upgradeRequest != null)
                 {
-                    upgradeRequest.request_status = status; 
+                    upgradeRequest.request_status = status;
                     db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.InternalServerError, "Request Completed");
+                    return Request.CreateResponse(HttpStatusCode.OK, "Request Completed");
                 }
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, "Request Failed");
             }

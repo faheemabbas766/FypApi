@@ -116,10 +116,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage ForgetPassword(String cnic, String password)
+        public HttpResponseMessage ForgetPassword()
         {
             try
             {
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+                String password = HttpContext.Current.Request.Form["password"];
                 var user = db.Users.FirstOrDefault(e => e.cnic == cnic);
 
                 if (user != null)
