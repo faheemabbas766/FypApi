@@ -61,7 +61,7 @@ namespace FypApi.Controllers
                 }
                 var postedFile = HttpContext.Current.Request.Files["post_image"];
                 if (postedFile != null && postedFile.ContentLength > 0 &&
-                (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png" || postedFile.ContentType == "application/octet-stream"))
                 {
                     // Generate a unique file name to avoid overwriting existing files
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
@@ -83,10 +83,11 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage DeletePost(int pid)
+        public HttpResponseMessage DeletePost()
         {
             try
             {
+                int pid = int.Parse(HttpContext.Current.Request.Form["pid"]);
                 var post = db.Posts.Find(pid);
                 if (post != null)
                 {
@@ -184,9 +185,6 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
-
-
-
         [HttpPost]
         public HttpResponseMessage AllPost()
         {
@@ -211,10 +209,11 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage AllCommentsByPostId(int postId)
+        public HttpResponseMessage AllCommentsByPostId()
         {
             try
             {
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
                 var list = db.AllComments.Where((e) => e.post_id == postId).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
@@ -224,10 +223,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage UserInfoById(string profileCinc, string cinc)
+        public HttpResponseMessage UserInfoById()
         {
             try
             {
+                string profileCinc = HttpContext.Current.Request.Form["profileCinc"];
+                string cinc = HttpContext.Current.Request.Form["cnic"];
                 var obj = db.UserInfoes.FirstOrDefault(e => e.user_cnic == profileCinc);
 
                 if (obj != null)
@@ -246,10 +247,13 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage RatePost(int postId, int score, String cnic)
+        public HttpResponseMessage RatePost()
         {
             try
             {
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
+                int score = int.Parse(HttpContext.Current.Request.Form["score"]);
+                String cnic = HttpContext.Current.Request.Form["cnic"]; 
                 Rate r = db.Rates.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
                 if (r != null)
                 {
@@ -275,10 +279,14 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage ReportPost(String cnic, int postId, String reportType, String reportReason)
+        public HttpResponseMessage ReportPost()
         {
             try
             {
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
+                String reportType = HttpContext.Current.Request.Form["reportType"];
+                String reportReason = HttpContext.Current.Request.Form["reportReason"];
                 var report = db.Reports.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
                 if (report != null)
                 {
@@ -305,10 +313,15 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage ReportComment(String cnic, int commentId, int postId, String reportType, String reportReason)
+        public HttpResponseMessage ReportComment()
         {
             try
             {
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+                int commentId = int.Parse(HttpContext.Current.Request.Form["commentId"]);
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
+                String reportType = HttpContext.Current.Request.Form["reportType"];
+                String reportReason = HttpContext.Current.Request.Form["reportReason"];
                 var report = db.Reports.Where((i) => i.Comment_id == commentId && i.User_cnic == cnic).FirstOrDefault();
                 if (report != null)
                 {
@@ -336,10 +349,13 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage AddComment(int postId, String cnic, String commentText)
+        public HttpResponseMessage AddComment()
         {
             try
             {
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]); 
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+                String commentText = HttpContext.Current.Request.Form["commentText"];
                 db.Comments.Add(new Comment() { User_cnic = cnic, Post_id = postId, comment_date = DateTime.Now, comment_text = commentText });
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, "Comment Added");
@@ -350,10 +366,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage FollowById(string userCnic, string accountCnic)
+        public HttpResponseMessage FollowById()
         {
             try
             {
+                string userCnic = HttpContext.Current.Request.Form["userCnic"];
+                string accountCnic = HttpContext.Current.Request.Form["accountCnic"];
                 var existingFollow = db.Follows.FirstOrDefault(f => f.User_cnic == userCnic && f.Follower_cnic == accountCnic);
 
                 if (existingFollow == null)
@@ -375,10 +393,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage LikePartyById(string userCnic, int partyId)
+        public HttpResponseMessage LikePartyById()
         {
             try
             {
+                string userCnic = HttpContext.Current.Request.Form["userCnic"];
+                int partyId = int.Parse(HttpContext.Current.Request.Form["partyId"]);
                 var existingLike = db.Likes.FirstOrDefault(f => f.User_cnic == userCnic && f.Paty_id == partyId);
                 if (existingLike == null)
                 {
@@ -440,10 +460,12 @@ namespace FypApi.Controllers
             }
         }
         [HttpPost]
-        public HttpResponseMessage ChangeParty(string userCnic, string party)
+        public HttpResponseMessage ChangeParty()
         {
             try
             {
+                string userCnic = HttpContext.Current.Request.Form["userCnic"];
+                string party = HttpContext.Current.Request.Form["party"];
                 var politician = db.Politicians.FirstOrDefault(f => f.User_cnic == userCnic);
                 if (politician != null)
                 {
