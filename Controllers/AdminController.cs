@@ -204,8 +204,7 @@ namespace FypApi.Controllers
                 {
                     string fileName = "abc.png"; // Default file name
 
-                    if (postedFile != null && postedFile.ContentLength > 0 &&
-                        (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                    if (postedFile != null && postedFile.ContentLength > 0)
                     {
                         fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
                         string filePath = HttpContext.Current.Server.MapPath("~/Uploads/Flags/") + fileName;
@@ -226,8 +225,7 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    if (postedFile != null && postedFile.ContentLength > 0 &&
-                        (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                    if (postedFile != null && postedFile.ContentLength > 0)
                     {
                         string oldFilePath = HttpContext.Current.Server.MapPath("~/Uploads/Flags/") + existingParty.party_flag;
 

@@ -496,8 +496,7 @@ namespace FypApi.Controllers
                         request_type = HttpContext.Current.Request.Form["request_type"],
                     };
                     var postedFile = HttpContext.Current.Request.Files["request_document"];
-                    if (postedFile != null && postedFile.ContentLength > 0 &&
-                    (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                    if (postedFile != null && postedFile.ContentLength > 0)
                     {
                         // Generate a unique file name to avoid overwriting existing files
                         string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);

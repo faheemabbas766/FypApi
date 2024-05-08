@@ -79,8 +79,7 @@ namespace FypApi.Controllers
                     };
 
                     var postedFile = HttpContext.Current.Request.Files["user_pic"];
-                    if (postedFile != null && postedFile.ContentLength > 0 &&
-                        (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png"))
+                    if (postedFile != null && postedFile.ContentLength > 0)
                     {
                         string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
                         string filePath = HttpContext.Current.Server.MapPath("~/Uploads/Profile/") + fileName;
