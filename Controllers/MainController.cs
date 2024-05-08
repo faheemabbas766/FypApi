@@ -195,7 +195,8 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-                    var list = db.AllPosts.Where((e) => e.post_uc == uc).Select(p => new
+
+                    var list = db.AllPosts.Select(p => new
                     {
                         post_id = p.post_id,
                         post_date = p.post_date,
@@ -211,8 +212,8 @@ namespace FypApi.Controllers
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
                         status = p.status,
-                        rated = db.Rates.Where(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic).Select(f => new { f.rate_score }),
-                        followed = db.Follows.Where(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic).FirstOrDefault().User_cnic,
+                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
+                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic).User_cnic : null,
                     }).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
@@ -234,8 +235,8 @@ namespace FypApi.Controllers
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
                         status = p.status,
-                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == p.user_cnic).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic) != null ? db.Follows.FirstOrDefault(f => f.Follower_cnic == p.user_cnic && f.Follower_cnic == cnic).User_cnic : null,
+                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
+                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic).User_cnic : null,
                     }).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
