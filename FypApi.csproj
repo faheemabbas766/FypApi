@@ -229,9 +229,6 @@
     <Compile Include="Models\Report.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\sysdiagram.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Models\UpgradeRequset.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>

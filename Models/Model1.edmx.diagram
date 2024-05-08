@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="15868d7eb2de478481260ba92a085971" Name="Diagram1">
+      <Diagram DiagramId="2a1340afcc8340fbb83e3bef0c173f1e" Name="Diagram1">
         <EntityTypeShape EntityType="V1Model.Admin" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.Comment" Width="1.5" PointX="5.25" PointY="16.125" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.Follow" Width="1.5" PointX="3" PointY="9.75" IsExpanded="true" />
@@ -15,13 +15,12 @@
         <EntityTypeShape EntityType="V1Model.Post" Width="1.5" PointX="3" PointY="20.5" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.Rate" Width="1.5" PointX="8.25" PointY="16.25" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.Report" Width="1.5" PointX="10.5" PointY="15.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.sysdiagram" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.UpgradeRequset" Width="1.5" PointX="3" PointY="24.625" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.User" Width="1.5" PointX="0.75" PointY="11.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.AllComment" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.AllPost" Width="1.5" PointX="5.75" PointY="4.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.AllReport" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.UserInfo" Width="1.5" PointX="7.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.AllComment" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.AllPost" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.AllReport" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="V1Model.UserInfo" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="V1Model.Admin_User" ManuallyRouted="false" />
         <AssociationConnector Association="V1Model.Comment_Post" ManuallyRouted="false" />
         <AssociationConnector Association="V1Model.Comment_User" ManuallyRouted="false" />

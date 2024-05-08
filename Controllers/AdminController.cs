@@ -15,7 +15,7 @@ namespace FypApi.Controllers
 {
     public class AdminController : ApiController
     {
-        V1Entities1 db = new V1Entities1();
+        V1Entities db = new V1Entities();
 
         [HttpPost]
         public HttpResponseMessage AllUpgradeRequests()

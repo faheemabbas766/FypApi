@@ -103,16 +103,6 @@
           <Property Name="Post_id" Type="int" Nullable="false" />
           <Property Name="Comment_id" Type="int" />
         </EntityType>
-        <EntityType Name="sysdiagrams">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
-          <Property Name="principal_id" Type="int" Nullable="false" />
-          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="version" Type="int" />
-          <Property Name="definition" Type="varbinary(max)" />
-        </EntityType>
         <EntityType Name="UpgradeRequset">
           <Key>
             <PropertyRef Name="id" />
@@ -416,7 +406,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Post" EntityType="Self.Post" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Rate" EntityType="Self.Rate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Report" EntityType="Self.Report" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UpgradeRequset" EntityType="Self.UpgradeRequset" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="User" EntityType="Self.User" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AllComments" EntityType="Self.AllComments" store:Type="Views" store:Schema="dbo">
@@ -664,16 +653,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <NavigationProperty Name="Comment" Relationship="Self.Report_Comment" FromRole="Report" ToRole="Comment" />
           <NavigationProperty Name="Post" Relationship="Self.Report_Post" FromRole="Report" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Report_User" FromRole="Report" ToRole="User" />
-        </EntityType>
-        <EntityType Name="sysdiagram">
-          <Key>
-            <PropertyRef Name="diagram_id" />
-          </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="principal_id" Type="Int32" Nullable="false" />
-          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="version" Type="Int32" />
-          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
         <EntityType Name="UpgradeRequset">
           <Key>
@@ -970,7 +949,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="V1Entities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="V1Entities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Admins" EntityType="Self.Admin" />
           <EntitySet Name="Comments" EntityType="Self.Comment" />
           <EntitySet Name="Follows" EntityType="Self.Follow" />
@@ -981,7 +960,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Posts" EntityType="Self.Post" />
           <EntitySet Name="Rates" EntityType="Self.Rate" />
           <EntitySet Name="Reports" EntityType="Self.Report" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
           <EntitySet Name="UpgradeRequsets" EntityType="Self.UpgradeRequset" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="AllComments" EntityType="Self.AllComment" />
@@ -1050,7 +1028,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="V1ModelStoreContainer" CdmEntityContainer="V1Entities1">
+        <EntityContainerMapping StorageEntityContainer="V1ModelStoreContainer" CdmEntityContainer="V1Entities">
           <EntitySetMapping Name="Admins">
             <EntityTypeMapping TypeName="V1Model.Admin">
               <MappingFragment StoreEntitySet="Admin">
@@ -1156,17 +1134,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="Post_id" ColumnName="Post_id" />
                 <ScalarProperty Name="Comment_id" ColumnName="Comment_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="sysdiagrams">
-            <EntityTypeMapping TypeName="V1Model.sysdiagram">
-              <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
-                <ScalarProperty Name="definition" ColumnName="definition" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

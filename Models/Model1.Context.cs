@@ -13,10 +13,10 @@ namespace FypApi.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class V1Entities1 : DbContext
+    public partial class V1Entities : DbContext
     {
-        public V1Entities1()
-            : base("name=V1Entities1")
+        public V1Entities()
+            : base("name=V1Entities")
         {
         }
     
@@ -35,7 +35,6 @@ namespace FypApi.Models
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Rate> Rates { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
-        public virtual DbSet<sysdiagram> sysdiagrams { get; set; }
         public virtual DbSet<UpgradeRequset> UpgradeRequsets { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AllComment> AllComments { get; set; }

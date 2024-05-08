@@ -25,7 +25,7 @@ namespace FypApi.Controllers
             "badword9",
         };
         private static ProfanityFilter.ProfanityFilter profanityFilter = new ProfanityFilter.ProfanityFilter(filterWords);
-        V1Entities1 db = new V1Entities1();
+        V1Entities db = new V1Entities();
 
         [HttpPost]
         public HttpResponseMessage AddPost()
@@ -264,14 +264,36 @@ namespace FypApi.Controllers
         {
             try
             {
-                string profileCinc = HttpContext.Current.Request.Form["profileCinc"];
+                string profileCnic = HttpContext.Current.Request.Form["profileCnic"];
                 string cinc = HttpContext.Current.Request.Form["cnic"];
-                var obj = db.UserInfoes.FirstOrDefault(e => e.user_cnic == profileCinc);
+                var obj = db.UserInfoes.FirstOrDefault(e => e.user_cnic == profileCnic);
 
                 if (obj != null)
                 {
-                    obj.is_follow = db.Follows.Any(e => e.User_cnic == profileCinc && e.Follower_cnic == cinc) ? "true" : "false";
-                    return Request.CreateResponse(HttpStatusCode.OK, obj);
+                    obj.is_follow = db.Follows.Any(e => e.User_cnic == profileCnic && e.Follower_cnic == cinc) ? "true" : "false";
+
+                    // Fetch posts associated with the user
+                    var userPosts = db.AllPosts.Where(p => p.politician_id == profileCnic || p.user_cnic == profileCnic).ToList();
+                    return Request.CreateResponse(HttpStatusCode.OK, new
+                    {
+                        user_cnic = obj.user_cnic,
+                        user_name = obj.user_name,
+                        user_picture = obj.user_picture,
+                        user_type = obj.user_type,
+                        user_total_post = obj.user_total_post,
+                        user_position = obj.user_position,
+                        user_total_followed = obj.user_total_followed,
+                        user_total_following = obj.user_total_following,
+                        user_province = obj.user_province,
+                        user_distinct = obj.user_distinct,
+                        user_tehsil = obj.user_tehsil,
+                        user_uc = obj.user_uc,
+                        user_phone = obj.user_phone,
+                        user_gender = obj.user_gender,
+                        created_date = obj.created_date,
+                        is_follow = obj.is_follow,
+                        userPosts = userPosts
+                    });
                 }
                 else
                 {
@@ -283,6 +305,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage RatePost()
         {
