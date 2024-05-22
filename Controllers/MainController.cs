@@ -195,7 +195,6 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-
                     var list = db.AllPosts.Select(p => new
                     {
                         post_id = p.post_id,
@@ -212,9 +211,10 @@ namespace FypApi.Controllers
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
                         status = p.status,
+                        politician_id = p.politician_id,
                         rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic).User_cnic : null,
-                    }).ToList();
+                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? true : false,
+                    }).OrderByDescending((e) => e.post_date).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
                 else
@@ -235,9 +235,10 @@ namespace FypApi.Controllers
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
                         status = p.status,
+                        politician_id = p.politician_id,
                         rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic).User_cnic : null,
-                    }).ToList();
+                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? true : false,
+                    }).OrderByDescending((e) => e.post_date).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
             }
@@ -274,7 +275,26 @@ namespace FypApi.Controllers
                     obj.is_follow = db.Follows.Any(e => e.User_cnic == profileCnic && e.Follower_cnic == cinc) ? "true" : "false";
 
                     // Fetch posts associated with the user
-                    var userPosts = db.AllPosts.Where(p => p.politician_id == profileCnic || p.user_cnic == profileCnic).ToList();
+                    var userPosts = db.AllPosts.Select(p => new
+                    {
+                        post_id = p.post_id,
+                        post_date = p.post_date,
+                        post_text = p.post_text,
+                        post_image = p.post_image,
+                        post_uc = p.post_uc,
+                        user_cnic = p.user_cnic,
+                        user_name = p.user_name,
+                        user_picture = p.user_picture,
+                        account_type = p.account_type,
+                        position = p.position,
+                        total_rating = p.total_rating,
+                        recent_comment = p.recent_comment,
+                        recent_comment_date = p.recent_comment_date,
+                        status = p.status,
+                        politician_id = p.politician_id,
+                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cinc) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cinc).rate_score : (int?)null,
+                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cinc && f.Follower_cnic == p.user_cnic) != null ? true : false,
+                    }).OrderByDescending((e) => e.post_date).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
                         user_cnic = obj.user_cnic,
@@ -293,7 +313,7 @@ namespace FypApi.Controllers
                         user_gender = obj.user_gender,
                         created_date = obj.created_date,
                         is_follow = obj.is_follow,
-                        userPosts = userPosts
+                        userPosts = userPosts,
                     });
                 }
                 else
@@ -383,7 +403,7 @@ namespace FypApi.Controllers
                 int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
                 String reportType = HttpContext.Current.Request.Form["reportType"];
                 String reportReason = HttpContext.Current.Request.Form["reportReason"];
-                var report = db.Reports.Where((i) => i.Comment_id == commentId && i.User_cnic == cnic).FirstOrDefault();
+                var report = db.Reports.Where((i) => i.Comment_id == commentId && i.User_cnic == cnic && i.Post_id == postId).FirstOrDefault();
                 if (report != null)
                 {
                     report.report_reason = reportReason;
