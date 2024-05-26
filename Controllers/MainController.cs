@@ -325,14 +325,13 @@ namespace FypApi.Controllers
                                       })
                                       .ToList();
 
-                    double postsRating = db.AllPosts
+                    double postsRating = Math.Round(db.AllPosts
                                           .Where(p => p.user_cnic == profileCnic)
                                           .Join(db.Rates,
                                                 post => post.post_id,
                                                 rate => rate.Post_id,
                                                 (post, rate) => new { rate.rate_score })
-                                          .DefaultIfEmpty()
-                                          .Average(r => (double?)r.rate_score) ?? 0 / 5.0;
+                                          .DefaultIfEmpty().Average(r => (double?)r.rate_score) ?? 0 / 5.0,1);
 
                     var followerCounts = db.UserInfoes
                                            .Select(u => new
@@ -342,6 +341,7 @@ namespace FypApi.Controllers
                                            }).OrderByDescending(u => u.followerCount).ToList();
 
                     int rank = followerCounts.FindIndex(u => u.user_cnic == profileCnic) + 1;
+
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
                         user.user_cnic,
