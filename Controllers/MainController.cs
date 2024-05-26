@@ -195,7 +195,7 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-                    var list = db.AllPosts.Select(p => new
+                    var list = db.AllPosts.Where((e)=>e.post_uc == uc).Select(p => new
                     {
                         post_id = p.post_id,
                         post_date = p.post_date,
@@ -261,59 +261,108 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage UserInfoById()
         {
             try
             {
                 string profileCnic = HttpContext.Current.Request.Form["profileCnic"];
-                string cinc = HttpContext.Current.Request.Form["cnic"];
-                var obj = db.UserInfoes.FirstOrDefault(e => e.user_cnic == profileCnic);
+                string cnic = HttpContext.Current.Request.Form["cnic"];
 
-                if (obj != null)
+                var user = db.UserInfoes
+                             .Where(e => e.user_cnic == profileCnic)
+                             .Select(e => new
+                             {
+                                 e.user_cnic,
+                                 e.user_name,
+                                 e.user_picture,
+                                 e.user_type,
+                                 e.user_total_post,
+                                 e.user_position,
+                                 e.user_total_following,
+                                 e.user_total_followed,
+                                 e.user_province,
+                                 e.user_distinct,
+                                 e.user_tehsil,
+                                 e.user_uc,
+                                 e.user_phone,
+                                 e.user_gender,
+                                 e.created_date
+                             })
+                             .FirstOrDefault();
+
+                if (user != null)
                 {
-                    obj.is_follow = db.Follows.Any(e => e.User_cnic == profileCnic && e.Follower_cnic == cinc) ? "true" : "false";
+                    bool isFollowing = db.Follows.Any(e => e.User_cnic == profileCnic && e.Follower_cnic == cnic);
 
-                    // Fetch posts associated with the user
-                    var userPosts = db.AllPosts.Select(p => new
-                    {
-                        post_id = p.post_id,
-                        post_date = p.post_date,
-                        post_text = p.post_text,
-                        post_image = p.post_image,
-                        post_uc = p.post_uc,
-                        user_cnic = p.user_cnic,
-                        user_name = p.user_name,
-                        user_picture = p.user_picture,
-                        account_type = p.account_type,
-                        position = p.position,
-                        total_rating = p.total_rating,
-                        recent_comment = p.recent_comment,
-                        recent_comment_date = p.recent_comment_date,
-                        status = p.status,
-                        politician_id = p.politician_id,
-                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cinc) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cinc).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cinc && f.Follower_cnic == p.user_cnic) != null ? true : false,
-                    }).OrderByDescending((e) => e.post_date).ToList();
+                    var userPosts = db.AllPosts
+                                      .Where(p => p.user_cnic == profileCnic)
+                                      .OrderByDescending(p => p.post_date)
+                                      .Select(p => new
+                                      {
+                                          p.post_id,
+                                          p.post_date,
+                                          p.post_text,
+                                          p.post_image,
+                                          p.post_uc,
+                                          p.user_cnic,
+                                          p.user_name,
+                                          p.user_picture,
+                                          p.account_type,
+                                          p.position,
+                                          p.total_rating,
+                                          p.recent_comment,
+                                          p.recent_comment_date,
+                                          p.status,
+                                          p.politician_id,
+                                          rate_score = db.Rates
+                                                         .Where(r => r.Post_id == p.post_id && r.User_cnic == cnic)
+                                                         .Select(r => r.rate_score)
+                                                         .FirstOrDefault(),
+                                          followed = db.Follows
+                                                       .Any(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic)
+                                      })
+                                      .ToList();
+
+                    double postsRating = db.AllPosts
+                                          .Where(p => p.user_cnic == profileCnic)
+                                          .Join(db.Rates,
+                                                post => post.post_id,
+                                                rate => rate.Post_id,
+                                                (post, rate) => new { rate.rate_score })
+                                          .DefaultIfEmpty()
+                                          .Average(r => (double?)r.rate_score) ?? 0 / 5.0;
+
+                    var followerCounts = db.UserInfoes
+                                           .Select(u => new
+                                           {
+                                               u.user_cnic,
+                                               followerCount = db.Follows.Count(f => f.User_cnic == u.user_cnic)
+                                           }).OrderByDescending(u => u.followerCount).ToList();
+
+                    int rank = followerCounts.FindIndex(u => u.user_cnic == profileCnic) + 1;
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
-                        user_cnic = obj.user_cnic,
-                        user_name = obj.user_name,
-                        user_picture = obj.user_picture,
-                        user_type = obj.user_type,
-                        user_total_post = obj.user_total_post,
-                        user_position = obj.user_position,
-                        user_total_followed = obj.user_total_followed,
-                        user_total_following = obj.user_total_following,
-                        user_province = obj.user_province,
-                        user_distinct = obj.user_distinct,
-                        user_tehsil = obj.user_tehsil,
-                        user_uc = obj.user_uc,
-                        user_phone = obj.user_phone,
-                        user_gender = obj.user_gender,
-                        created_date = obj.created_date,
-                        is_follow = obj.is_follow,
-                        userPosts = userPosts,
+                        user.user_cnic,
+                        user.user_name,
+                        user.user_picture,
+                        user.user_type,
+                        user.user_total_post,
+                        user.user_position,
+                        user_total_followed = user.user_total_following, // Corrected swapped properties
+                        user_total_following = user.user_total_followed,
+                        user.user_province,
+                        user.user_distinct,
+                        user.user_tehsil,
+                        user.user_uc,
+                        user.user_phone,
+                        user.user_gender,
+                        user.created_date,
+                        is_follow = isFollowing ? "true" : "false",
+                        postsRating,
+                        rank,
+                        userPosts
                     });
                 }
                 else
@@ -323,9 +372,11 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
+                // Optionally log the exception here
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
 
         [HttpPost]
         public HttpResponseMessage RatePost()
@@ -560,6 +611,65 @@ namespace FypApi.Controllers
             }
             catch (Exception ex)
             {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+        [HttpPost]
+        public HttpResponseMessage AllFollowing()
+        {
+            try
+            {
+                // Retrieve the cnic from the request form
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+
+                // Query the database to get the list of users that the provided cnic is following
+                var list = db.Follows
+                    .Where(f => f.User_cnic == cnic)
+                    .Select(f => new
+                    {
+                        user_cnic = f.Follower_cnic,
+                        user_name = db.Users.FirstOrDefault(u => u.cnic == f.Follower_cnic).full_name,
+                        user_picture = db.Users.FirstOrDefault(u => u.cnic == f.Follower_cnic).user_pic,
+                        followed_back = true
+                    }).ToList();
+
+                // Return the list as a response
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and return an internal server error response
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+
+        [HttpPost]
+        public HttpResponseMessage AllFollowed()
+        {
+            try
+            {
+                // Retrieve the cnic from the request form
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+
+                // Query the database to get the list of users that the provided cnic is following
+                var list = db.Follows
+                    .Where(f => f.Follower_cnic == cnic)
+                    .Select(f => new
+                    {
+                        user_cnic = f.User_cnic    ,
+                        user_name = db.Users.FirstOrDefault(u => u.cnic == f.User_cnic).full_name,
+                        user_picture = db.Users.FirstOrDefault(u => u.cnic == f.User_cnic).user_pic,
+                        followed_back = db.Follows.Any(ff => ff.User_cnic == cnic && ff.Follower_cnic == f.User_cnic)
+                    })
+                    .ToList();
+
+                // Return the list as a response
+                return Request.CreateResponse(HttpStatusCode.OK, list);
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions and return an internal server error response
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
