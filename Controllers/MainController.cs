@@ -60,8 +60,7 @@ namespace FypApi.Controllers
                     post.status = "Approved";
                 }
                 var postedFile = HttpContext.Current.Request.Files["post_image"];
-                if (postedFile != null && postedFile.ContentLength > 0 &&
-                (postedFile.ContentType == "image/jpeg" || postedFile.ContentType == "image/png" || postedFile.ContentType == "application/octet-stream"))
+                if (postedFile != null && postedFile.ContentLength > 0)
                 {
                     // Generate a unique file name to avoid overwriting existing files
                     string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
