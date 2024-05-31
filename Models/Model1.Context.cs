@@ -39,7 +39,6 @@ namespace FypApi.Models
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<AllComment> AllComments { get; set; }
         public virtual DbSet<AllPost> AllPosts { get; set; }
-        public virtual DbSet<AllReport> AllReports { get; set; }
         public virtual DbSet<UserInfo> UserInfoes { get; set; }
     }
 }

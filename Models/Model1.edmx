@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="id" />
@@ -89,6 +89,7 @@
           <Property Name="rate_date" Type="datetime" Nullable="false" />
           <Property Name="Post_id" Type="int" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="pop_score" Type="int" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -175,32 +176,6 @@ warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key define
           <Property Name="recent_comment_date" Type="datetime" />
           <Property Name="status" Type="varchar" MaxLength="50" />
           <Property Name="politician_id" Type="varchar" MaxLength="50" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'V1.dbo.AllReports' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="AllReports">
-          <Key>
-            <PropertyRef Name="report_id" />
-            <PropertyRef Name="report_type" />
-            <PropertyRef Name="report_date" />
-            <PropertyRef Name="report_status" />
-            <PropertyRef Name="report_reason" />
-          </Key>
-          <Property Name="report_id" Type="int" Nullable="false" />
-          <Property Name="reporter_cnic" Type="varchar" MaxLength="255" />
-          <Property Name="reporter_name" Type="varchar" MaxLength="255" />
-          <Property Name="reporter_picture" Type="text" />
-          <Property Name="reporter_gender" Type="varchar" MaxLength="255" />
-          <Property Name="report_type" Type="varchar" MaxLength="7" Nullable="false" />
-          <Property Name="reported_item_id" Type="int" />
-          <Property Name="reported_item_content" Type="text" />
-          <Property Name="reported_cnic" Type="varchar" MaxLength="255" />
-          <Property Name="reported_name" Type="varchar" MaxLength="255" />
-          <Property Name="reported_picture" Type="text" />
-          <Property Name="reported_gender" Type="varchar" MaxLength="255" />
-          <Property Name="report_date" Type="datetime" Nullable="false" />
-          <Property Name="report_status" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="report_reason" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -438,25 +413,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     [AllPost].[politician_id] AS [politician_id]
     FROM [dbo].[AllPost] AS [AllPost]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="AllReports" EntityType="Self.AllReports" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [AllReports].[report_id] AS [report_id], 
-    [AllReports].[reporter_cnic] AS [reporter_cnic], 
-    [AllReports].[reporter_name] AS [reporter_name], 
-    [AllReports].[reporter_picture] AS [reporter_picture], 
-    [AllReports].[reporter_gender] AS [reporter_gender], 
-    [AllReports].[report_type] AS [report_type], 
-    [AllReports].[reported_item_id] AS [reported_item_id], 
-    [AllReports].[reported_item_content] AS [reported_item_content], 
-    [AllReports].[reported_cnic] AS [reported_cnic], 
-    [AllReports].[reported_name] AS [reported_name], 
-    [AllReports].[reported_picture] AS [reported_picture], 
-    [AllReports].[reported_gender] AS [reported_gender], 
-    [AllReports].[report_date] AS [report_date], 
-    [AllReports].[report_status] AS [report_status], 
-    [AllReports].[report_reason] AS [report_reason]
-    FROM [dbo].[AllReports] AS [AllReports]</DefiningQuery>
-          </EntitySet>
           <EntitySet Name="UserInfo" EntityType="Self.UserInfo" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
     [UserInfo].[user_cnic] AS [user_cnic], 
@@ -534,8 +490,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="UpgradeRequset" EntitySet="UpgradeRequset" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="V1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -637,6 +592,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Post" Relationship="Self.Rate_Post" FromRole="Rate" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Rate_User" FromRole="Rate" ToRole="User" />
+          <Property Name="pop_score" Type="Int32" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -733,30 +689,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="recent_comment_date" Type="DateTime" Precision="3" />
           <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="politician_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-        </EntityType>
-        <EntityType Name="AllReport">
-          <Key>
-            <PropertyRef Name="report_id" />
-            <PropertyRef Name="report_type" />
-            <PropertyRef Name="report_date" />
-            <PropertyRef Name="report_status" />
-            <PropertyRef Name="report_reason" />
-          </Key>
-          <Property Name="report_id" Type="Int32" Nullable="false" />
-          <Property Name="reporter_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="reporter_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="reporter_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="reporter_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="report_type" Type="String" MaxLength="7" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="reported_item_id" Type="Int32" />
-          <Property Name="reported_item_content" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="reported_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="reported_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="reported_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="reported_gender" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="report_date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="report_status" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="report_reason" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
         </EntityType>
         <EntityType Name="UserInfo">
           <Key>
@@ -964,7 +896,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="AllComments" EntityType="Self.AllComment" />
           <EntitySet Name="AllPosts" EntityType="Self.AllPost" />
-          <EntitySet Name="AllReports" EntityType="Self.AllReport" />
           <EntitySet Name="UserInfoes" EntityType="Self.UserInfo" />
           <AssociationSet Name="Admin_User" Association="Self.Admin_User">
             <End Role="User" EntitySet="Users" />
@@ -1115,6 +1046,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="Rates">
             <EntityTypeMapping TypeName="V1Model.Rate">
               <MappingFragment StoreEntitySet="Rate">
+                <ScalarProperty Name="pop_score" ColumnName="pop_score" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="rate_score" ColumnName="rate_score" />
                 <ScalarProperty Name="rate_date" ColumnName="rate_date" />
@@ -1199,27 +1131,6 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="recent_comment_date" ColumnName="recent_comment_date" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="politician_id" ColumnName="politician_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AllReports">
-            <EntityTypeMapping TypeName="V1Model.AllReport">
-              <MappingFragment StoreEntitySet="AllReports">
-                <ScalarProperty Name="report_id" ColumnName="report_id" />
-                <ScalarProperty Name="reporter_cnic" ColumnName="reporter_cnic" />
-                <ScalarProperty Name="reporter_name" ColumnName="reporter_name" />
-                <ScalarProperty Name="reporter_picture" ColumnName="reporter_picture" />
-                <ScalarProperty Name="reporter_gender" ColumnName="reporter_gender" />
-                <ScalarProperty Name="report_type" ColumnName="report_type" />
-                <ScalarProperty Name="reported_item_id" ColumnName="reported_item_id" />
-                <ScalarProperty Name="reported_item_content" ColumnName="reported_item_content" />
-                <ScalarProperty Name="reported_cnic" ColumnName="reported_cnic" />
-                <ScalarProperty Name="reported_name" ColumnName="reported_name" />
-                <ScalarProperty Name="reported_picture" ColumnName="reported_picture" />
-                <ScalarProperty Name="reported_gender" ColumnName="reported_gender" />
-                <ScalarProperty Name="report_date" ColumnName="report_date" />
-                <ScalarProperty Name="report_status" ColumnName="report_status" />
-                <ScalarProperty Name="report_reason" ColumnName="report_reason" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -19,7 +19,6 @@
         <EntityTypeShape EntityType="V1Model.User" Width="1.5" PointX="0.75" PointY="11.125" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.AllComment" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.AllPost" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="V1Model.AllReport" Width="1.5" PointX="5.75" PointY="5.75" IsExpanded="true" />
         <EntityTypeShape EntityType="V1Model.UserInfo" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
         <AssociationConnector Association="V1Model.Admin_User" ManuallyRouted="false" />
         <AssociationConnector Association="V1Model.Comment_Post" ManuallyRouted="false" />

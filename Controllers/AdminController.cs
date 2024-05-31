@@ -45,7 +45,28 @@ namespace FypApi.Controllers
         {
             try
             {
-                var list = db.AllReports.Where((e) => e.report_status == "pending").ToList();
+                var list = db.Reports
+                    .Where(e => e.report_status == "pending")
+                    .Select(r => new
+                    {
+                        ReportId = r.id,
+                        ReporterCnic = r.User.cnic,
+                        ReporterName = r.User.full_name,
+                        ReporterPicture = r.User.user_pic,
+                        ReporterGender = r.User.user_gender,
+                        ReporterRole = r.User.role,
+                        ReportType = r.Comment_id == null ? "Post" : "Comment",
+                        ReportedItemId = r.Comment_id == null ? r.Post.id : r.Comment.id,
+                        ReportedItemContent = r.Comment_id == null ? r.Post.post_text : r.Comment.comment_text,
+                        ReportDate = r.report_date,
+                        ReportStatus = r.report_status,
+                        ReportReason = r.report_reason,
+                        PostImage = r.Post.post_image,
+                        PostText = r.Post.post_text,
+                        PostDate = r.Post.post_date,
+                    })
+                    .ToList();
+
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
@@ -53,6 +74,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
 
         [HttpPost]
         public HttpResponseMessage AllReviewPost()
@@ -112,7 +134,10 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    db.Admins.Add(new Admin() { User_cnic = cnic, type = type });
+                    Admin newAdmin = new Admin();
+                    newAdmin.type = type;
+                    newAdmin.User_cnic =  cnic;
+                    db.Admins.Add(newAdmin);
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, "Admin Added");
                 }

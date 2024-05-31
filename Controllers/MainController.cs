@@ -194,7 +194,7 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-                    var list = db.AllPosts.Where((e)=>e.post_uc == uc).Select(p => new
+                    var list = db.AllPosts.Where((e) => e.post_uc == uc).Select(p => new
                     {
                         post_id = p.post_id,
                         post_date = p.post_date,
@@ -287,14 +287,12 @@ namespace FypApi.Controllers
                                  e.user_uc,
                                  e.user_phone,
                                  e.user_gender,
-                                 e.created_date
+                                 e.created_date,
                              })
                              .FirstOrDefault();
 
                 if (user != null)
                 {
-                    bool isFollowing = db.Follows.Any(e => e.User_cnic == profileCnic && e.Follower_cnic == cnic);
-
                     var userPosts = db.AllPosts
                                       .Where(p => p.user_cnic == profileCnic)
                                       .OrderByDescending(p => p.post_date)
@@ -315,12 +313,6 @@ namespace FypApi.Controllers
                                           p.recent_comment_date,
                                           p.status,
                                           p.politician_id,
-                                          rate_score = db.Rates
-                                                         .Where(r => r.Post_id == p.post_id && r.User_cnic == cnic)
-                                                         .Select(r => r.rate_score)
-                                                         .FirstOrDefault(),
-                                          followed = db.Follows
-                                                       .Any(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic)
                                       })
                                       .ToList();
 
@@ -330,7 +322,7 @@ namespace FypApi.Controllers
                                                 post => post.post_id,
                                                 rate => rate.Post_id,
                                                 (post, rate) => new { rate.rate_score })
-                                          .DefaultIfEmpty().Average(r => (double?)r.rate_score) ?? 0 / 5.0,1);
+                                          .DefaultIfEmpty().Average(r => (double?)r.rate_score) ?? 0 / 5.0, 1);
 
                     var followerCounts = db.UserInfoes
                                            .Select(u => new
@@ -340,6 +332,7 @@ namespace FypApi.Controllers
                                            }).OrderByDescending(u => u.followerCount).ToList();
 
                     int rank = followerCounts.FindIndex(u => u.user_cnic == profileCnic) + 1;
+                    int popScore = db.Rates.Sum((e) => e.pop_score).toList();
 
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
@@ -349,7 +342,7 @@ namespace FypApi.Controllers
                         user.user_type,
                         user.user_total_post,
                         user.user_position,
-                        user_total_followed = user.user_total_following, // Corrected swapped properties
+                        user_total_followed = user.user_total_following,
                         user_total_following = user.user_total_followed,
                         user.user_province,
                         user.user_distinct,
@@ -358,8 +351,9 @@ namespace FypApi.Controllers
                         user.user_phone,
                         user.user_gender,
                         user.created_date,
-                        is_follow = isFollowing ? "true" : "false",
+                        is_follow = db.Follows.Any(e => e.User_cnic == cnic && e.Follower_cnic == profileCnic) ? "true" : "false",
                         postsRating,
+                        popScore,
                         rank,
                         userPosts
                     });
@@ -384,13 +378,27 @@ namespace FypApi.Controllers
             {
                 int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
                 int score = int.Parse(HttpContext.Current.Request.Form["score"]);
-                String cnic = HttpContext.Current.Request.Form["cnic"]; 
+                String cnic = HttpContext.Current.Request.Form["cnic"];
+                int postsRating = 0;
                 Rate r = db.Rates.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
+                var role = db.Users.FirstOrDefault(e => e.cnic == cnic && e.role == "Journalist");
+                if (role != null)
+                {
+                    postsRating = (int)Math.Round(db.AllPosts
+                                          .Where(p => p.user_cnic == cnic)
+                                          .Join(db.Rates,
+                                                post => post.post_id,
+                                                rate => rate.Post_id,
+                                                (post, rate) => new { rate.rate_score })
+                                          .DefaultIfEmpty().Average(rate => (double?)r.rate_score) ?? 0 / 5.0, 1);
+                    postsRating = score * postsRating;
+                }
                 if (r != null)
                 {
                     r.rate_score = score;
                     r.rate_date = DateTime.Now;
                     r.Post_id = postId;
+                    r.pop_score = postsRating;
                 }
                 else
                 {
@@ -399,6 +407,7 @@ namespace FypApi.Controllers
                     r.rate_date = DateTime.Now;
                     r.Post_id = postId;
                     r.User_cnic = cnic;
+                    r.pop_score = postsRating;
                     db.Rates.Add(r);
                 }
                 db.SaveChanges();
@@ -484,7 +493,7 @@ namespace FypApi.Controllers
         {
             try
             {
-                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]); 
+                int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
                 String cnic = HttpContext.Current.Request.Form["cnic"];
                 String commentText = HttpContext.Current.Request.Form["commentText"];
                 db.Comments.Add(new Comment() { User_cnic = cnic, Post_id = postId, comment_date = DateTime.Now, comment_text = commentText });
@@ -556,7 +565,7 @@ namespace FypApi.Controllers
             {
                 String User_cnic = HttpContext.Current.Request.Form["User_cnic"];
                 var res = db.UpgradeRequsets.FirstOrDefault((e) => e.User_cnic == User_cnic && e.request_status == "Pending");
-                if(res == null)
+                if (res == null)
                 {
                     var ur = new UpgradeRequset
                     {
@@ -581,7 +590,8 @@ namespace FypApi.Controllers
                     db.UpgradeRequsets.Add(ur);
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, ur);
-                }else
+                }
+                else
                     return Request.CreateResponse(HttpStatusCode.OK, "Your Request is already Pending");
             }
             catch (Exception ex)
@@ -656,7 +666,7 @@ namespace FypApi.Controllers
                     .Where(f => f.Follower_cnic == cnic)
                     .Select(f => new
                     {
-                        user_cnic = f.User_cnic    ,
+                        user_cnic = f.User_cnic,
                         user_name = db.Users.FirstOrDefault(u => u.cnic == f.User_cnic).full_name,
                         user_picture = db.Users.FirstOrDefault(u => u.cnic == f.User_cnic).user_pic,
                         followed_back = db.Follows.Any(ff => ff.User_cnic == cnic && ff.Follower_cnic == f.User_cnic)

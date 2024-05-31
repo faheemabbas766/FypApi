@@ -19,6 +19,7 @@ namespace FypApi.Models
         public System.DateTime rate_date { get; set; }
         public int Post_id { get; set; }
         public string User_cnic { get; set; }
+        public Nullable<int> pop_score { get; set; }
     
         public virtual Post Post { get; set; }
         public virtual User User { get; set; }
