@@ -31,6 +31,9 @@ namespace FypApi.Controllers
                     s.request_status,
                     s.request_document,
                     s.request_date,
+                    s.platform,
+                    s.position,
+                    s.objection,
                 }).ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
@@ -154,14 +157,14 @@ namespace FypApi.Controllers
             try
             {
                 string cnic = HttpContext.Current.Request.Form["cnic"];
-                string experience = HttpContext.Current.Request.Form["experience"];
+                string position = HttpContext.Current.Request.Form["position"];
                 string reference = HttpContext.Current.Request.Form["reference"];
 
                 var res = db.Journalists.Where((e) => e.User_cnic == cnic).FirstOrDefault();
                 if (res != null)
                 {
                     res.reference = reference;
-                    res.experience = experience;
+                    res.position = position;
                     var a = db.Users.Where((i) => i.cnic == cnic).FirstOrDefault();
                     a.role = "Journalist";
                     db.SaveChanges();
@@ -169,7 +172,7 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    db.Journalists.Add(new Journalist() { User_cnic = cnic, experience = experience, reference = reference });
+                    db.Journalists.Add(new Journalist() { User_cnic = cnic, position = position, reference = reference });
                     db.SaveChanges();
                     return Request.CreateResponse(HttpStatusCode.OK, "Journalist Added");
                 }
@@ -291,20 +294,91 @@ namespace FypApi.Controllers
             {
                 string cnic = HttpContext.Current.Request.Form["cnic"];
                 string status = HttpContext.Current.Request.Form["status"];
+                string objection = HttpContext.Current.Request.Form["objection"];
+                var upgradeRequest = db.UpgradeRequsets
+                    .Where(e => e.User_cnic == cnic)
+                    .OrderByDescending(e => e.request_date)
+                    .FirstOrDefault();
 
-                UpgradeRequset upgradeRequest = db.UpgradeRequsets.Where(e => e.User_cnic == cnic).OrderByDescending(e => e.request_date).FirstOrDefault();
-                if (upgradeRequest != null)
+                if (upgradeRequest == null)
                 {
-                    upgradeRequest.request_status = status;
-                    db.SaveChanges();
-                    return Request.CreateResponse(HttpStatusCode.OK, "Request Completed");
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "Upgrade request not found");
                 }
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, "Request Failed");
+
+                if (status != "Rejected")
+                {
+                    AddUserToAppropriateTable(upgradeRequest);
+                }
+
+                var user = db.Users
+                    .FirstOrDefault(u => u.cnic == upgradeRequest.User_cnic);
+
+                if (user != null)
+                {
+                    user.role = upgradeRequest.request_type;
+                    user.isDeleted = 0;
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound, "User not found");
+                }
+
+                upgradeRequest.request_status = status;
+                upgradeRequest.objection = objection;
+
+                db.SaveChanges();
+                return Request.CreateResponse(HttpStatusCode.OK, "Request Completed");
             }
             catch (Exception ex)
             {
-                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, $"Error: {ex.Message}");
             }
         }
+
+        private void AddUserToAppropriateTable(UpgradeRequset upgradeRequest)
+        {
+            switch (upgradeRequest.request_type)
+            {
+                case "MNA":
+                case "MPA":
+                    db.Politicians.AddOrUpdate(new Politician
+                    {
+                        User_cnic = upgradeRequest.User_cnic,
+                        politician_type = upgradeRequest.request_type,
+                        politicain_position = upgradeRequest.position,
+                        Party_name = upgradeRequest.platform
+                    });
+                    break;
+
+                case "Journalist":
+                    db.Journalists.AddOrUpdate(new Journalist
+                    {
+                        User_cnic = upgradeRequest.User_cnic,
+                        reference = upgradeRequest.platform,
+                        position = upgradeRequest.position
+                    });
+                    break;
+
+                case "Admin":
+                    db.Admins.AddOrUpdate(new Admin
+                    {
+                        User_cnic = upgradeRequest.User_cnic,
+                        type = upgradeRequest.request_type
+                    });
+                    break;
+                case "Citizen":
+                    var politicians = db.Politicians.Where(p => p.User_cnic == upgradeRequest.User_cnic);
+                    var journalists = db.Journalists.Where(j => j.User_cnic == upgradeRequest.User_cnic);
+                    var admins = db.Admins.Where(a => a.User_cnic == upgradeRequest.User_cnic);
+                    db.Politicians.RemoveRange(politicians);
+                    db.Journalists.RemoveRange(journalists);
+                    db.Admins.RemoveRange(admins);
+                    break;
+
+                default:
+                    throw new InvalidOperationException("Unsupported request type");
+            }
+        }
+
     }
 }

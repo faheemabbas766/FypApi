@@ -37,7 +37,7 @@
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="reference" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="experience" Type="varchar" MaxLength="255" Nullable="false" />
+          <Property Name="position" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
         <EntityType Name="Like">
@@ -89,7 +89,7 @@
           <Property Name="rate_date" Type="datetime" Nullable="false" />
           <Property Name="Post_id" Type="int" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
-          <Property Name="pop_score" Type="int" />
+          <Property Name="pop_score" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -114,6 +114,9 @@
           <Property Name="request_document" Type="text" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="request_date" Type="datetime" />
+          <Property Name="platform" Type="varchar" MaxLength="50" />
+          <Property Name="position" Type="varchar" MaxLength="50" />
+          <Property Name="objection" Type="varchar" MaxLength="255" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -531,9 +534,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="reference" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
-          <Property Name="experience" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Self.Journalist_User" FromRole="Journalist" ToRole="User" />
+          <Property Name="position" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Like">
           <Key>
@@ -592,7 +595,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Post" Relationship="Self.Rate_Post" FromRole="Rate" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Rate_User" FromRole="Rate" ToRole="User" />
-          <Property Name="pop_score" Type="Int32" />
+          <Property Name="pop_score" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -621,6 +624,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="request_date" Type="DateTime" Precision="3" />
           <NavigationProperty Name="User" Relationship="Self.UpgradeRequset_User" FromRole="UpgradeRequset" ToRole="User" />
+          <Property Name="position" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="objection" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Name="platform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -992,9 +998,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="Journalists">
             <EntityTypeMapping TypeName="V1Model.Journalist">
               <MappingFragment StoreEntitySet="Journalist">
+                <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="reference" ColumnName="reference" />
-                <ScalarProperty Name="experience" ColumnName="experience" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1072,6 +1078,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="UpgradeRequsets">
             <EntityTypeMapping TypeName="V1Model.UpgradeRequset">
               <MappingFragment StoreEntitySet="UpgradeRequset">
+                <ScalarProperty Name="platform" ColumnName="platform" />
+                <ScalarProperty Name="objection" ColumnName="objection" />
+                <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="request_type" ColumnName="request_type" />
                 <ScalarProperty Name="request_status" ColumnName="request_status" />

@@ -332,7 +332,7 @@ namespace FypApi.Controllers
                                            }).OrderByDescending(u => u.followerCount).ToList();
 
                     int rank = followerCounts.FindIndex(u => u.user_cnic == profileCnic) + 1;
-                    int popScore = db.Rates.Sum((e) => e.pop_score).toList();
+                    int popScore = db.Rates.Sum(e => e.pop_score);
 
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
@@ -573,6 +573,8 @@ namespace FypApi.Controllers
                         request_date = DateTime.Now,
                         request_status = "Pending",
                         request_type = HttpContext.Current.Request.Form["request_type"],
+                        platform = HttpContext.Current.Request.Form["platform"],
+                        position = HttpContext.Current.Request.Form["position"],
                     };
                     var postedFile = HttpContext.Current.Request.Files["request_document"];
                     if (postedFile != null && postedFile.ContentLength > 0)
