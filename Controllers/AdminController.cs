@@ -1,15 +1,12 @@
 ﻿using FypApi.Models;
 using System;
-using System.Collections.Generic;
 using System.Data.Entity.Migrations;
 using System.IO;
-using System.IO.Ports;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.UI.WebControls.WebParts;
 
 namespace FypApi.Controllers
 {
