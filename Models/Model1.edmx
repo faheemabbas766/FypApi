@@ -165,6 +165,7 @@ warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key define
             <PropertyRef Name="user_cnic" />
             <PropertyRef Name="account_type" />
             <PropertyRef Name="total_rating" />
+            <PropertyRef Name="countComment" />
           </Key>
           <Property Name="post_id" Type="int" Nullable="false" />
           <Property Name="post_date" Type="datetime" />
@@ -176,11 +177,12 @@ warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key define
           <Property Name="user_picture" Type="text" />
           <Property Name="account_type" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="position" Type="varchar" MaxLength="255" />
-          <Property Name="total_rating" Type="int" Nullable="false" />
+          <Property Name="total_rating" Type="float" Nullable="false" />
           <Property Name="recent_comment" Type="text" />
           <Property Name="recent_comment_date" Type="datetime" />
           <Property Name="status" Type="varchar" MaxLength="50" />
           <Property Name="politician_id" Type="varchar" MaxLength="50" />
+          <Property Name="countComment" Type="int" Nullable="false" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -416,7 +418,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     [AllPost].[recent_comment] AS [recent_comment], 
     [AllPost].[recent_comment_date] AS [recent_comment_date], 
     [AllPost].[status] AS [status], 
-    [AllPost].[politician_id] AS [politician_id]
+    [AllPost].[politician_id] AS [politician_id], 
+    [AllPost].[countComment] AS [countComment]
     FROM [dbo].[AllPost] AS [AllPost]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="UserInfo" EntityType="Self.UserInfo" store:Type="Views" store:Schema="dbo">
@@ -685,6 +688,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <PropertyRef Name="user_cnic" />
             <PropertyRef Name="account_type" />
             <PropertyRef Name="total_rating" />
+            <PropertyRef Name="countComment" />
           </Key>
           <Property Name="post_id" Type="Int32" Nullable="false" />
           <Property Name="post_date" Type="DateTime" Precision="3" />
@@ -696,11 +700,12 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="user_picture" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="account_type" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="total_rating" Type="Int32" Nullable="false" />
+          <Property Name="total_rating" Type="Double" Nullable="false" />
           <Property Name="recent_comment" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="recent_comment_date" Type="DateTime" Precision="3" />
           <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="politician_id" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="countComment" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="UserInfo">
           <Key>
@@ -1148,6 +1153,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="recent_comment_date" ColumnName="recent_comment_date" />
                 <ScalarProperty Name="status" ColumnName="status" />
                 <ScalarProperty Name="politician_id" ColumnName="politician_id" />
+                <ScalarProperty Name="countComment" ColumnName="countComment" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

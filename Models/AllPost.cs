@@ -24,10 +24,11 @@ namespace FypApi.Models
         public string user_picture { get; set; }
         public string account_type { get; set; }
         public string position { get; set; }
-        public int total_rating { get; set; }
+        public double total_rating { get; set; }
         public string recent_comment { get; set; }
         public Nullable<System.DateTime> recent_comment_date { get; set; }
         public string status { get; set; }
         public string politician_id { get; set; }
+        public int countComment { get; set; }
     }
 }

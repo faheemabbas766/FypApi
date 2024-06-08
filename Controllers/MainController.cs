@@ -222,6 +222,7 @@ namespace FypApi.Controllers
                         total_rating = p.total_rating,
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
+                        count_comment = p.countComment,
                         status = p.status,
                         politician_id = p.politician_id,
                         rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
@@ -246,6 +247,7 @@ namespace FypApi.Controllers
                         total_rating = p.total_rating,
                         recent_comment = p.recent_comment,
                         recent_comment_date = p.recent_comment_date,
+                        count_comment = p.countComment,
                         status = p.status,
                         politician_id = p.politician_id,
                         rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
@@ -307,7 +309,7 @@ namespace FypApi.Controllers
                 if (user != null)
                 {
                     var userPosts = db.AllPosts
-                                      .Where(p => p.user_cnic == profileCnic)
+                                      .Where(p => p.user_cnic == profileCnic || p.politician_id == profileCnic)
                                       .OrderByDescending(p => p.post_date)
                                       .Select(p => new
                                       {
@@ -336,15 +338,18 @@ namespace FypApi.Controllers
                                                 rate => rate.Post_id,
                                                 (post, rate) => new { rate.rate_score })
                                           .DefaultIfEmpty().Average(r => (double?)r.rate_score) ?? 0 / 5.0, 1);
-
                     var followerCounts = db.UserInfoes
                                            .Select(u => new
                                            {
                                                u.user_cnic,
-                                               followerCount = db.Follows.Count(f => f.User_cnic == u.user_cnic)
+                                               followerCount = db.Follows.Count(f => f.Follower_cnic == u.user_cnic)
                                            }).OrderByDescending(u => u.followerCount).ToList();
 
-                    int rank = followerCounts.FindIndex(u => u.user_cnic == profileCnic) + 1;
+                    var rank = followerCounts.Select((f, index) => new{
+                        f.user_cnic,
+                        f.followerCount,
+                        Rank = index + 1
+                    }).ToList();
                     int popScore = db.Rates.Sum(e => e.pop_score);
 
                     return Request.CreateResponse(HttpStatusCode.OK, new
@@ -367,7 +372,7 @@ namespace FypApi.Controllers
                         is_follow = db.Follows.Any(e => e.User_cnic == cnic && e.Follower_cnic == profileCnic) ? "true" : "false",
                         postsRating,
                         popScore,
-                        rank,
+                        rank.FirstOrDefault((i)=> i.user_cnic == profileCnic).Rank,
                         userPosts
                     });
                 }
@@ -392,7 +397,7 @@ namespace FypApi.Controllers
                 int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
                 int score = int.Parse(HttpContext.Current.Request.Form["score"]);
                 String cnic = HttpContext.Current.Request.Form["cnic"];
-                int postsRating = 0;
+                int postsRating = 1;
                 Rate r = db.Rates.Where((i) => i.Post_id == postId && i.User_cnic == cnic).FirstOrDefault();
                 var role = db.Users.FirstOrDefault(e => e.cnic == cnic && e.role == "Journalist");
                 if (role != null)
@@ -422,9 +427,9 @@ namespace FypApi.Controllers
                     r.pop_score = postsRating;
                     db.Rates.Add(r);
                 }
-                var avg = db.Rates.Where(e => e.Post_id == postId).Sum(e => e.pop_score);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, avg/5);
+                var avg = db.Rates.Where(e => e.Post_id == postId).Average(e => e.rate_score);
+                return Request.CreateResponse(HttpStatusCode.OK, avg);
             }
             catch (Exception ex)
             {
