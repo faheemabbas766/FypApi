@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-    <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="V1Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Admin">
           <Key>
             <PropertyRef Name="id" />
@@ -22,6 +22,7 @@
           <Property Name="comment_text" Type="text" Nullable="false" />
           <Property Name="User_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="Post_id" Type="int" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="Follow">
           <Key>
@@ -144,7 +145,7 @@ warning 6002: The table/view 'V1.dbo.AllComments' does not have a primary key de
             <PropertyRef Name="comment_id" />
             <PropertyRef Name="comment_text" />
             <PropertyRef Name="comment_date" />
-            <PropertyRef Name="post_id" />
+            <PropertyRef Name="Post_id" />
           </Key>
           <Property Name="user_cnic" Type="varchar" MaxLength="255" Nullable="false" />
           <Property Name="user_name" Type="varchar" MaxLength="255" />
@@ -152,7 +153,8 @@ warning 6002: The table/view 'V1.dbo.AllComments' does not have a primary key de
           <Property Name="comment_id" Type="int" Nullable="false" />
           <Property Name="comment_text" Type="text" Nullable="false" />
           <Property Name="comment_date" Type="datetime" Nullable="false" />
-          <Property Name="post_id" Type="int" Nullable="false" />
+          <Property Name="Post_id" Type="int" Nullable="false" />
+          <Property Name="status" Type="varchar" MaxLength="50" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view 'V1.dbo.AllPost' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -394,7 +396,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
     [AllComments].[comment_id] AS [comment_id], 
     [AllComments].[comment_text] AS [comment_text], 
     [AllComments].[comment_date] AS [comment_date], 
-    [AllComments].[post_id] AS [post_id]
+    [AllComments].[Post_id] AS [Post_id], 
+    [AllComments].[status] AS [status]
     FROM [dbo].[AllComments] AS [AllComments]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="AllPost" EntityType="Self.AllPost" store:Type="Views" store:Schema="dbo">
@@ -493,7 +496,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <End Role="UpgradeRequset" EntitySet="UpgradeRequset" />
           </AssociationSet>
         </EntityContainer>
-      </Schema></edmx:StorageModels>
+      </Schema>
+    </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="V1Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -515,6 +519,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="comment_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Post_id" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <NavigationProperty Name="Post" Relationship="Self.Comment_Post" FromRole="Comment" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Comment_User" FromRole="Comment" ToRole="User" />
           <NavigationProperty Name="Reports" Relationship="Self.Report_Comment" FromRole="Comment" ToRole="Report" />
@@ -534,9 +539,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="reference" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="position" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Self.Journalist_User" FromRole="Journalist" ToRole="User" />
-          <Property Name="position" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="Like">
           <Key>
@@ -593,9 +598,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="rate_date" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="Post_id" Type="Int32" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="pop_score" Type="Int32" Nullable="false" />
           <NavigationProperty Name="Post" Relationship="Self.Rate_Post" FromRole="Rate" ToRole="Post" />
           <NavigationProperty Name="User" Relationship="Self.Rate_User" FromRole="Rate" ToRole="User" />
-          <Property Name="pop_score" Type="Int32" Nullable="false" />
         </EntityType>
         <EntityType Name="Report">
           <Key>
@@ -623,10 +628,10 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="request_document" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="User_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="request_date" Type="DateTime" Precision="3" />
-          <NavigationProperty Name="User" Relationship="Self.UpgradeRequset_User" FromRole="UpgradeRequset" ToRole="User" />
+          <Property Name="platform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="position" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="objection" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="platform" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="User" Relationship="Self.UpgradeRequset_User" FromRole="UpgradeRequset" ToRole="User" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -662,7 +667,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
             <PropertyRef Name="comment_id" />
             <PropertyRef Name="comment_text" />
             <PropertyRef Name="comment_date" />
-            <PropertyRef Name="post_id" />
+            <PropertyRef Name="Post_id" />
           </Key>
           <Property Name="user_cnic" Type="String" MaxLength="255" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="user_name" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
@@ -670,7 +675,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <Property Name="comment_id" Type="Int32" Nullable="false" />
           <Property Name="comment_text" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="comment_date" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="post_id" Type="Int32" Nullable="false" />
+          <Property Name="Post_id" Type="Int32" Nullable="false" />
+          <Property Name="status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="AllPost">
           <Key>
@@ -983,6 +989,7 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="comment_text" ColumnName="comment_text" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="Post_id" ColumnName="Post_id" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -998,9 +1005,9 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="Journalists">
             <EntityTypeMapping TypeName="V1Model.Journalist">
               <MappingFragment StoreEntitySet="Journalist">
-                <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="reference" ColumnName="reference" />
+                <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1052,12 +1059,12 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="Rates">
             <EntityTypeMapping TypeName="V1Model.Rate">
               <MappingFragment StoreEntitySet="Rate">
-                <ScalarProperty Name="pop_score" ColumnName="pop_score" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="rate_score" ColumnName="rate_score" />
                 <ScalarProperty Name="rate_date" ColumnName="rate_date" />
                 <ScalarProperty Name="Post_id" ColumnName="Post_id" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
+                <ScalarProperty Name="pop_score" ColumnName="pop_score" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1078,15 +1085,15 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
           <EntitySetMapping Name="UpgradeRequsets">
             <EntityTypeMapping TypeName="V1Model.UpgradeRequset">
               <MappingFragment StoreEntitySet="UpgradeRequset">
-                <ScalarProperty Name="platform" ColumnName="platform" />
-                <ScalarProperty Name="objection" ColumnName="objection" />
-                <ScalarProperty Name="position" ColumnName="position" />
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="request_type" ColumnName="request_type" />
                 <ScalarProperty Name="request_status" ColumnName="request_status" />
                 <ScalarProperty Name="request_document" ColumnName="request_document" />
                 <ScalarProperty Name="User_cnic" ColumnName="User_cnic" />
                 <ScalarProperty Name="request_date" ColumnName="request_date" />
+                <ScalarProperty Name="platform" ColumnName="platform" />
+                <ScalarProperty Name="position" ColumnName="position" />
+                <ScalarProperty Name="objection" ColumnName="objection" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1118,7 +1125,8 @@ warning 6002: The table/view 'V1.dbo.UserInfo' does not have a primary key defin
                 <ScalarProperty Name="comment_id" ColumnName="comment_id" />
                 <ScalarProperty Name="comment_text" ColumnName="comment_text" />
                 <ScalarProperty Name="comment_date" ColumnName="comment_date" />
-                <ScalarProperty Name="post_id" ColumnName="post_id" />
+                <ScalarProperty Name="Post_id" ColumnName="Post_id" />
+                <ScalarProperty Name="status" ColumnName="status" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

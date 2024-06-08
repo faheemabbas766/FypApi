@@ -14,6 +14,52 @@ namespace FypApi.Controllers
     {
         V1Entities db = new V1Entities();
 
+
+        [HttpPost]
+        public HttpResponseMessage UpdateReport()
+        {
+            try
+            {
+                int reportId = int.Parse(HttpContext.Current.Request.Form["reportId"]);
+                string status = HttpContext.Current.Request.Form["status"];
+                string type = HttpContext.Current.Request.Form["type"];
+                int ReportedItemId = int.Parse(HttpContext.Current.Request.Form["ReportedItemId"]);
+
+                var report = db.Reports.FirstOrDefault((e) => e.id == reportId);
+                if (report != null)
+                {
+                    report.report_status = status;
+                    if (status == "Approved")
+                    {
+                        if(type == "Comment")
+                        {
+                            var a = db.Comments.FirstOrDefault((e)=> e.id == ReportedItemId);
+                            a.status = "Deleted";
+                        }
+                        else
+                        {
+                            var a = db.Posts.FirstOrDefault((e) => e.id == ReportedItemId);
+                            a.status = "Deleted";
+                        }
+                    }
+                    else
+                    {
+                        db.Reports.Remove(report);
+                    }
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, "Review Complete!!!");
+                }
+                else
+                {
+                    return Request.CreateResponse(HttpStatusCode.OK, "Review Failed!!!");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
         [HttpPost]
         public HttpResponseMessage AllUpgradeRequests()
         {
@@ -220,27 +266,31 @@ namespace FypApi.Controllers
             try
             {
                 string name = HttpContext.Current.Request.Form["party_name"];
-                string symbol = HttpContext.Current.Request.Form["party_symbol"];
-                var postedFile = HttpContext.Current.Request.Files["party_flag"];
+                var symbolFile = HttpContext.Current.Request.Files["party_symbol"];
+                var flagFile = HttpContext.Current.Request.Files["party_flag"];
 
                 var existingParty = db.Parties.FirstOrDefault(e => e.party_name == name);
 
                 if (existingParty == null)
                 {
-                    string fileName = "abc.png"; // Default file name
+                    string symbolFileName = "default_symbol.png"; // Default symbol file name
+                    string flagFileName = "default_flag.png"; // Default flag file name
 
-                    if (postedFile != null && postedFile.ContentLength > 0)
+                    if (symbolFile != null && symbolFile.ContentLength > 0)
                     {
-                        fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
-                        string filePath = HttpContext.Current.Server.MapPath("~/Uploads/Flags/") + fileName;
-                        postedFile.SaveAs(filePath);
+                        symbolFileName = SavePostedFile(symbolFile, "~/Uploads/");
+                    }
+
+                    if (flagFile != null && flagFile.ContentLength > 0)
+                    {
+                        flagFileName = SavePostedFile(flagFile, "~/Uploads/");
                     }
 
                     var newParty = new Party
                     {
                         party_name = name,
-                        party_symbol = symbol,
-                        party_flag = fileName
+                        party_symbol = symbolFileName,
+                        party_flag = flagFileName
                     };
 
                     db.Parties.Add(newParty);
@@ -250,32 +300,20 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    if (postedFile != null && postedFile.ContentLength > 0)
+                    if (symbolFile != null && symbolFile.ContentLength > 0)
                     {
-                        string oldFilePath = HttpContext.Current.Server.MapPath("~/Uploads/Flags/") + existingParty.party_flag;
-
-                        // Delete old party flag file
-                        if (File.Exists(oldFilePath))
-                        {
-                            File.Delete(oldFilePath);
-                        }
-
-                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
-                        string filePath = HttpContext.Current.Server.MapPath("~/Uploads/Flags/") + fileName;
-                        postedFile.SaveAs(filePath);
-
-                        existingParty.party_symbol = symbol;
-                        existingParty.party_flag = fileName;
-
-                        db.SaveChanges();
-                        return Request.CreateResponse(HttpStatusCode.OK, "Party Updated");
+                        DeleteExistingFile(existingParty.party_symbol, "~/Uploads/");
+                        existingParty.party_symbol = SavePostedFile(symbolFile, "~/Uploads/");
                     }
-                    else
+
+                    if (flagFile != null && flagFile.ContentLength > 0)
                     {
-                        existingParty.party_symbol = symbol;
-                        db.SaveChanges();
-                        return Request.CreateResponse(HttpStatusCode.OK, "Party details updated");
+                        DeleteExistingFile(existingParty.party_flag, "~/Uploads/");
+                        existingParty.party_flag = SavePostedFile(flagFile, "~/Uploads/");
                     }
+
+                    db.SaveChanges();
+                    return Request.CreateResponse(HttpStatusCode.OK, "Party Updated");
                 }
             }
             catch (Exception ex)
@@ -283,6 +321,24 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
+        private string SavePostedFile(HttpPostedFile postedFile, string folderPath)
+        {
+            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(postedFile.FileName);
+            string filePath = HttpContext.Current.Server.MapPath(folderPath) + fileName;
+            postedFile.SaveAs(filePath);
+            return fileName;
+        }
+
+        private void DeleteExistingFile(string fileName, string folderPath)
+        {
+            string filePath = HttpContext.Current.Server.MapPath(folderPath) + fileName;
+            if (File.Exists(filePath))
+            {
+                File.Delete(filePath);
+            }
+        }
+
 
         [HttpPost]
         public HttpResponseMessage UpdateRequest()
@@ -338,7 +394,7 @@ namespace FypApi.Controllers
             {
                 case "MNA":
                 case "MPA":
-                    db.Politicians.AddOrUpdate(new Politician
+                    db.Politicians.AddOrUpdate(p => p.User_cnic, new Politician
                     {
                         User_cnic = upgradeRequest.User_cnic,
                         politician_type = upgradeRequest.request_type,
@@ -348,7 +404,7 @@ namespace FypApi.Controllers
                     break;
 
                 case "Journalist":
-                    db.Journalists.AddOrUpdate(new Journalist
+                    db.Journalists.AddOrUpdate(j => j.User_cnic, new Journalist
                     {
                         User_cnic = upgradeRequest.User_cnic,
                         reference = upgradeRequest.platform,
@@ -357,12 +413,13 @@ namespace FypApi.Controllers
                     break;
 
                 case "Admin":
-                    db.Admins.AddOrUpdate(new Admin
+                    db.Admins.AddOrUpdate(a => a.User_cnic, new Admin
                     {
                         User_cnic = upgradeRequest.User_cnic,
                         type = upgradeRequest.request_type
                     });
                     break;
+
                 case "Citizen":
                     var politicians = db.Politicians.Where(p => p.User_cnic == upgradeRequest.User_cnic);
                     var journalists = db.Journalists.Where(j => j.User_cnic == upgradeRequest.User_cnic);
@@ -375,7 +432,8 @@ namespace FypApi.Controllers
                 default:
                     throw new InvalidOperationException("Unsupported request type");
             }
-        }
 
+            db.SaveChanges(); // Ensure changes are saved to the database
+        }
     }
 }

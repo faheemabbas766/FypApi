@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using ProfanityFilter;
+using System.Text;
 
 namespace FypApi.Controllers
 {
@@ -40,25 +41,35 @@ namespace FypApi.Controllers
                     post_uc = HttpContext.Current.Request.Form["post_uc"],
                     politician_id = HttpContext.Current.Request.Form["politician_id"],
                 };
+
                 string[] words = post.post_text.Split(' ');
-                bool containsProfanity = false;
+                //bool containsProfanity = false;
+                var filteredText = new StringBuilder();
+
                 foreach (var word in words)
                 {
                     if (profanityFilter.IsProfanity(word))
                     {
-                        containsProfanity = true;
-                        break;
+                        //containsProfanity = true;
+                        filteredText.Append("***** ");
+                    }
+                    else
+                    {
+                        filteredText.Append(word + " ");
                     }
                 }
 
-                if (containsProfanity)
-                {
-                    post.status = "Review";
-                }
-                else
-                {
+                post.post_text = filteredText.ToString().Trim(); // Update the post text with the filtered text
+
+                //if (containsProfanity)
+                //{
+                //    post.status = "Review";
+                //}
+                //else
+                //{
                     post.status = "Approved";
-                }
+                //}
+
                 var postedFile = HttpContext.Current.Request.Files["post_image"];
                 if (postedFile != null && postedFile.ContentLength > 0)
                 {
@@ -72,6 +83,7 @@ namespace FypApi.Controllers
                     postedFile.SaveAs(filePath);
                     post.post_image = fileName;
                 }
+
                 db.Posts.Add(post);
                 db.SaveChanges();
                 return Request.CreateResponse(HttpStatusCode.OK, post.status);
@@ -81,6 +93,7 @@ namespace FypApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.InternalServerError, ex.Message);
             }
         }
+
         [HttpPost]
         public HttpResponseMessage DeletePost()
         {
@@ -194,7 +207,7 @@ namespace FypApi.Controllers
                 String uc = HttpContext.Current.Request.Form["uc"];
                 if (uc != null)
                 {
-                    var list = db.AllPosts.Where((e) => e.post_uc == uc).Select(p => new
+                    var list = db.AllPosts.Where((e) => e.post_uc == uc && e.status != "Deleted").Select(p => new
                     {
                         post_id = p.post_id,
                         post_date = p.post_date,
@@ -218,7 +231,7 @@ namespace FypApi.Controllers
                 }
                 else
                 {
-                    var list = db.AllPosts.Select(p => new
+                    var list = db.AllPosts.Where((e) => e.status != "Deleted").Select(p => new
                     {
                         post_id = p.post_id,
                         post_date = p.post_date,
@@ -252,7 +265,7 @@ namespace FypApi.Controllers
             try
             {
                 int postId = int.Parse(HttpContext.Current.Request.Form["postId"]);
-                var list = db.AllComments.Where((e) => e.post_id == postId).ToList();
+                var list = db.AllComments.Where((e) => e.Post_id == postId && e.status != "Deleted").ToList();
                 return Request.CreateResponse(HttpStatusCode.OK, list);
             }
             catch (Exception ex)
@@ -391,14 +404,13 @@ namespace FypApi.Controllers
                                                 rate => rate.Post_id,
                                                 (post, rate) => new { rate.rate_score })
                                           .DefaultIfEmpty().Average(rate => (double?)r.rate_score) ?? 0 / 5.0, 1);
-                    postsRating = score * postsRating;
                 }
                 if (r != null)
                 {
                     r.rate_score = score;
                     r.rate_date = DateTime.Now;
                     r.Post_id = postId;
-                    r.pop_score = postsRating;
+                    r.pop_score = score * postsRating;
                 }
                 else
                 {
@@ -410,8 +422,9 @@ namespace FypApi.Controllers
                     r.pop_score = postsRating;
                     db.Rates.Add(r);
                 }
+                var avg = db.Rates.Where(e => e.Post_id == postId).Sum(e => e.pop_score);
                 db.SaveChanges();
-                return Request.CreateResponse(HttpStatusCode.OK, "Rate Successful");
+                return Request.CreateResponse(HttpStatusCode.OK, avg/5);
             }
             catch (Exception ex)
             {

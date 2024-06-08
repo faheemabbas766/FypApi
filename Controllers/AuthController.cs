@@ -86,6 +86,10 @@ namespace FypApi.Controllers
                         postedFile.SaveAs(filePath);
                         u.user_pic = fileName;
                     }
+                    else
+                    {
+                        u.user_pic = "faheemprofile.jpg";
+                    }
                     db.Users.Add(u);
                     db.SaveChanges();
                     var user = new

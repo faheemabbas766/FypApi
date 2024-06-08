@@ -16,8 +16,8 @@ namespace FypApi.Models
     {
         public int id { get; set; }
         public string reference { get; set; }
-        public string User_cnic { get; set; }
         public string position { get; set; }
+        public string User_cnic { get; set; }
     
         public virtual User User { get; set; }
     }

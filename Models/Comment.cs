@@ -25,6 +25,7 @@ namespace FypApi.Models
         public string comment_text { get; set; }
         public string User_cnic { get; set; }
         public int Post_id { get; set; }
+        public string status { get; set; }
     
         public virtual Post Post { get; set; }
         public virtual User User { get; set; }

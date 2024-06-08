@@ -20,9 +20,9 @@ namespace FypApi.Models
         public string request_document { get; set; }
         public string User_cnic { get; set; }
         public Nullable<System.DateTime> request_date { get; set; }
+        public string platform { get; set; }
         public string position { get; set; }
         public string objection { get; set; }
-        public string platform { get; set; }
     
         public virtual User User { get; set; }
     }

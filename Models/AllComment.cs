@@ -20,6 +20,7 @@ namespace FypApi.Models
         public int comment_id { get; set; }
         public string comment_text { get; set; }
         public System.DateTime comment_date { get; set; }
-        public int post_id { get; set; }
+        public int Post_id { get; set; }
+        public string status { get; set; }
     }
 }
