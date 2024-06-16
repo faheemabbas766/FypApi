@@ -445,7 +445,7 @@ namespace FypApi.Controllers
                 }
                 db.SaveChanges();
                 var avg = db.Rates.Where(e => e.Post_id == postId).Average(e => e.rate_score);
-                return Request.CreateResponse(HttpStatusCode.OK, avg);
+                return Request.CreateResponse(HttpStatusCode.OK, new {score = avg});
             }
             catch (Exception ex)
             {
