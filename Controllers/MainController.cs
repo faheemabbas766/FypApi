@@ -67,7 +67,7 @@ namespace FypApi.Controllers
                 //}
                 //else
                 //{
-                    post.status = "Approved";
+                post.status = "Approved";
                 //}
 
                 var postedFile = HttpContext.Current.Request.Files["post_image"];
@@ -208,51 +208,63 @@ namespace FypApi.Controllers
                 if (uc != null)
                 {
                     var list = db.AllPosts.Where((e) => e.post_uc == uc && e.status != "Deleted").Select(p => new
-                    {
-                        post_id = p.post_id,
-                        post_date = p.post_date,
-                        post_text = p.post_text,
-                        post_image = p.post_image,
-                        post_uc = p.post_uc,
-                        user_cnic = p.user_cnic,
-                        user_name = p.user_name,
-                        user_picture = p.user_picture,
-                        account_type = p.account_type,
-                        position = p.position,
-                        total_rating = p.total_rating,
-                        recent_comment = p.recent_comment,
-                        recent_comment_date = p.recent_comment_date,
-                        count_comment = p.countComment,
-                        status = p.status,
-                        politician_id = p.politician_id,
-                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? true : false,
-                    }).OrderByDescending((e) => e.post_date).ToList();
+    {
+        post_id = p.post_id,
+        post_date = p.post_date,
+        post_text = p.post_text,
+        post_image = p.post_image,
+        post_uc = p.post_uc,
+        user_cnic = p.user_cnic,
+        user_name = p.user_name,
+        user_picture = p.user_picture,
+        account_type = p.account_type,
+        position = p.position,
+        total_rating = p.total_rating,
+        recent_comment = p.recent_comment,
+        recent_comment_date = p.recent_comment_date,
+        count_comment = p.countComment,
+        status = p.status,
+        politician_id = p.politician_id,
+        rate_score = db.Rates
+            .Where(e => e.Post_id == p.post_id && e.User_cnic == cnic)
+            .Select(e => (int?)e.rate_score) // Cast to nullable int
+            .FirstOrDefault() ?? 0,
+                        followed = db.Follows
+            .FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null
+            ? true
+            : false,
+    }).OrderByDescending(e => e.post_date).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
                 else
                 {
-                    var list = db.AllPosts.Where((e) => e.status != "Deleted").Select(p => new
-                    {
-                        post_id = p.post_id,
-                        post_date = p.post_date,
-                        post_text = p.post_text,
-                        post_image = p.post_image,
-                        post_uc = p.post_uc,
-                        user_cnic = p.user_cnic,
-                        user_name = p.user_name,
-                        user_picture = p.user_picture,
-                        account_type = p.account_type,
-                        position = p.position,
-                        total_rating = p.total_rating,
-                        recent_comment = p.recent_comment,
-                        recent_comment_date = p.recent_comment_date,
-                        count_comment = p.countComment,
-                        status = p.status,
-                        politician_id = p.politician_id,
-                        rate_score = db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic) != null ? db.Rates.FirstOrDefault(e => e.Post_id == p.post_id && e.User_cnic == cnic).rate_score : (int?)null,
-                        followed = db.Follows.FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null ? true : false,
-                    }).OrderByDescending((e) => e.post_date).ToList();
+                    var list = db.AllPosts.Where(e => e.status != "Deleted").Select(p => new
+    {
+        post_id = p.post_id,
+        post_date = p.post_date,
+        post_text = p.post_text,
+        post_image = p.post_image,
+        post_uc = p.post_uc,
+        user_cnic = p.user_cnic,
+        user_name = p.user_name,
+        user_picture = p.user_picture,
+        account_type = p.account_type,
+        position = p.position,
+        total_rating = p.total_rating,
+        recent_comment = p.recent_comment,
+        recent_comment_date = p.recent_comment_date,
+        count_comment = p.countComment,
+        status = p.status,
+        politician_id = p.politician_id,
+        rate_score = db.Rates
+            .Where(e => e.Post_id == p.post_id && e.User_cnic == cnic)
+            .Select(e => (int?)e.rate_score) // Cast to nullable int
+            .FirstOrDefault() ?? 0,
+                        followed = db.Follows
+            .FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null
+            ? true
+            : false,
+    }).OrderByDescending(e => e.post_date).ToList();
                     return Request.CreateResponse(HttpStatusCode.OK, list);
                 }
             }
@@ -308,28 +320,33 @@ namespace FypApi.Controllers
 
                 if (user != null)
                 {
-                    var userPosts = db.AllPosts
-                                      .Where(p => p.user_cnic == profileCnic || p.politician_id == profileCnic)
-                                      .OrderByDescending(p => p.post_date)
-                                      .Select(p => new
-                                      {
-                                          p.post_id,
-                                          p.post_date,
-                                          p.post_text,
-                                          p.post_image,
-                                          p.post_uc,
-                                          p.user_cnic,
-                                          p.user_name,
-                                          p.user_picture,
-                                          p.account_type,
-                                          p.position,
-                                          p.total_rating,
-                                          p.recent_comment,
-                                          p.recent_comment_date,
-                                          p.status,
-                                          p.politician_id,
-                                      })
-                                      .ToList();
+                    var userPosts = db.AllPosts.Where(e => e.status != "Deleted" && e.politician_id == profileCnic).Select(p => new
+                    {
+                        post_id = p.post_id,
+                        post_date = p.post_date,
+                        post_text = p.post_text,
+                        post_image = p.post_image,
+                        post_uc = p.post_uc,
+                        user_cnic = p.user_cnic,
+                        user_name = p.user_name,
+                        user_picture = p.user_picture,
+                        account_type = p.account_type,
+                        position = p.position,
+                        total_rating = p.total_rating,
+                        recent_comment = p.recent_comment,
+                        recent_comment_date = p.recent_comment_date,
+                        count_comment = p.countComment,
+                        status = p.status,
+                        politician_id = p.politician_id,
+                        rate_score = db.Rates
+            .Where(e => e.Post_id == p.post_id && e.User_cnic == cnic)
+            .Select(e => (int?)e.rate_score)
+            .FirstOrDefault() ?? 0,
+                        followed = db.Follows
+            .FirstOrDefault(f => f.User_cnic == cnic && f.Follower_cnic == p.user_cnic) != null
+            ? true
+            : false,
+                    }).OrderByDescending(e => e.post_date).ToList();
 
                     double postsRating = Math.Round(db.AllPosts
                                           .Where(p => p.user_cnic == profileCnic)
@@ -345,12 +362,12 @@ namespace FypApi.Controllers
                                                followerCount = db.Follows.Count(f => f.Follower_cnic == u.user_cnic)
                                            }).OrderByDescending(u => u.followerCount).ToList();
 
-                    var rank = followerCounts.Select((f, index) => new{
+                    var rank = followerCounts.Select((f, index) => new {
                         f.user_cnic,
                         f.followerCount,
                         Rank = index + 1
                     }).ToList();
-                    int popScore = db.Rates.Sum(e => e.pop_score);
+                    int popScore = db.Rates.Where((i) => i.User_cnic == cnic).Sum(e => e.pop_score);
 
                     return Request.CreateResponse(HttpStatusCode.OK, new
                     {
@@ -372,7 +389,7 @@ namespace FypApi.Controllers
                         is_follow = db.Follows.Any(e => e.User_cnic == cnic && e.Follower_cnic == profileCnic) ? "true" : "false",
                         postsRating,
                         popScore,
-                        rank.FirstOrDefault((i)=> i.user_cnic == profileCnic).Rank,
+                        rank = rank.FirstOrDefault((i) => i.user_cnic == profileCnic).Rank,
                         userPosts
                     });
                 }
@@ -414,7 +431,6 @@ namespace FypApi.Controllers
                 {
                     r.rate_score = score;
                     r.rate_date = DateTime.Now;
-                    r.Post_id = postId;
                     r.pop_score = score * postsRating;
                 }
                 else
@@ -424,7 +440,7 @@ namespace FypApi.Controllers
                     r.rate_date = DateTime.Now;
                     r.Post_id = postId;
                     r.User_cnic = cnic;
-                    r.pop_score = postsRating;
+                    r.pop_score = score * postsRating;
                     db.Rates.Add(r);
                 }
                 db.SaveChanges();
